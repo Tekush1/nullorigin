@@ -15,6 +15,8 @@ import {
   Globe,
   User,
   Mail,
+  ArrowLeft,
+  ExternalLink,
 } from "lucide-react";
 
 const GOOGLE_SCRIPT_URL =
@@ -75,7 +77,6 @@ export default function RegistrationPage({ onBack }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (status === "loading") return;
-
     setStatus("loading");
     setErrorMsg("");
 
@@ -102,7 +103,6 @@ export default function RegistrationPage({ onBack }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      // no-cors means we can't read the response, treat as success
       sound.playSuccess?.();
       setStatus("success");
     } catch (err) {
@@ -112,359 +112,384 @@ export default function RegistrationPage({ onBack }: Props) {
     }
   };
 
+  // ── shared classes ──
   const inputClass =
-    "w-full bg-black/95 border border-zinc-850 hover:border-zinc-700 focus:border-red-600 focus:outline-none rounded px-3.5 py-2.5 text-xs md:text-sm tracking-wider text-emerald-400 placeholder-zinc-700 uppercase focus:ring-1 focus:ring-red-600/30 transition-all font-mono";
+    "w-full bg-[#080810] border border-zinc-800 hover:border-zinc-600 focus:border-red-600 focus:outline-none rounded-md px-3.5 py-2.5 text-[12px] md:text-[13px] tracking-wider text-emerald-400 placeholder-zinc-700 uppercase focus:ring-1 focus:ring-red-600/25 transition-all font-mono";
+  const labelClass =
+    "text-[10px] tracking-widest text-zinc-500 uppercase font-bold mb-1.5 flex items-center gap-1.5 select-none";
+  const sectionHeadingClass =
+    "text-[10px] tracking-widest font-black uppercase border-l-2 pl-2.5";
 
-  const labelClass = "text-[10px] tracking-widest text-zinc-500 uppercase font-bold mb-1 flex items-center gap-1";
-
-  const memberFields = (n: number, prefix: keyof FormData, prefix2: keyof FormData, optional = false) => (
-    <div className="space-y-3">
-      <div>
-        <label className={labelClass}>
-          <Hash className="h-3 w-3 text-red-500" />
-          Member {n} Discord Username {optional && <span className="text-zinc-700">(Optional)</span>}
-        </label>
-        <input
-          type="text"
-          value={form[prefix] as string}
-          onChange={(e) => handleChange(prefix, e.target.value)}
-          placeholder={`MEMBER_${n}_DISCORD`}
-          required={!optional}
-          className={inputClass}
-        />
-      </div>
-      <div>
-        <label className={labelClass}>
-          <ExternalLinkIcon className="h-3 w-3 text-red-500" />
-          Member {n} CTFtime Profile {optional && <span className="text-zinc-700">(Optional)</span>}
-        </label>
-        <input
-          type="text"
-          value={form[prefix2] as string}
-          onChange={(e) => handleChange(prefix2, e.target.value)}
-          placeholder={`CTFTIME.ORG/TEAM/...`}
-          required={!optional}
-          className={inputClass}
-        />
-      </div>
-    </div>
-  );
-
+  // ── SUCCESS PAGE ──
   if (status === "success") {
     return (
       <div className="min-h-screen bg-[#020202] text-gray-100 font-mono flex flex-col relative overflow-x-hidden">
-        <div className="flex-1 flex items-center justify-center px-4 py-16">
-          <div className="max-w-lg w-full bg-[#06060c]/85 border border-emerald-900/50 rounded-lg p-8 text-center space-y-6 shadow-[0_0_40px_rgba(34,197,94,0.1)]">
-            <CheckCircle2 className="h-16 w-16 text-emerald-400 mx-auto animate-pulse" />
-            <div>
-              <h2 className="text-xl font-black tracking-widest text-emerald-400 uppercase mb-2">
-                REGISTRATION CONFIRMED
-              </h2>
-              <p className="text-sm text-zinc-400 font-sans leading-relaxed">
-                Team <span className="text-emerald-400 font-bold">{form.teamName}</span> has been successfully registered for Null Origin CTF. Check your inbox for confirmation.
+        <RegistrationHeader onBack={onBack} />
+        <main className="flex-1 flex items-center justify-center px-4 py-16">
+          <div className="max-w-md w-full bg-[#06060c]/90 border border-emerald-900/40 rounded-xl p-8 md:p-10 text-center space-y-7 shadow-[0_0_60px_rgba(34,197,94,0.08)]">
+            <div className="relative inline-block">
+              <CheckCircle2 className="h-14 w-14 text-emerald-400 mx-auto" aria-hidden="true" />
+              <div className="absolute inset-0 rounded-full bg-emerald-500/10 blur-xl" aria-hidden="true" />
+            </div>
+
+            <div className="space-y-2">
+              <h1 className="text-lg font-black tracking-widest text-emerald-400 uppercase">
+                Registration Confirmed
+              </h1>
+              <p className="text-[13px] text-zinc-400 font-sans leading-relaxed">
+                Team{" "}
+                <span className="text-emerald-400 font-bold">{form.teamName}</span>{" "}
+                is registered for Null Origin CTF. Check your inbox for confirmation details.
               </p>
             </div>
-            <div className="bg-black/60 border border-zinc-800 rounded p-4 text-left space-y-2 text-xs font-mono">
-              <div className="flex justify-between">
-                <span className="text-zinc-500">TEAM:</span>
-                <span className="text-emerald-400 font-bold">{form.teamName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-500">LEADER:</span>
-                <span className="text-zinc-300">{form.leaderName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-500">EMAIL:</span>
-                <span className="text-zinc-300">{form.leaderEmail}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-500">COUNTRY:</span>
-                <span className="text-zinc-300">{form.country}</span>
-              </div>
+
+            <div className="bg-black/60 border border-zinc-800 rounded-lg p-4 text-left space-y-2.5 text-[11px] font-mono">
+              {[
+                { label: "TEAM", value: form.teamName, accent: true },
+                { label: "LEADER", value: form.leaderName },
+                { label: "EMAIL", value: form.leaderEmail },
+                { label: "COUNTRY", value: form.country },
+              ].map(({ label, value, accent }) => (
+                <div key={label} className="flex items-center justify-between gap-4">
+                  <span className="text-zinc-600 shrink-0">{label}</span>
+                  <span className={`truncate text-right ${accent ? "text-emerald-400 font-bold" : "text-zinc-300"}`}>{value}</span>
+                </div>
+              ))}
             </div>
-            <button
-              onClick={() => { setStatus("idle"); setForm(initialForm); }}
-              onMouseEnter={() => sound.playHover?.()}
-              className="w-full flex items-center justify-center space-x-2 bg-red-950/80 border border-red-600 hover:bg-red-900 text-red-100 font-bold tracking-widest px-4 py-3 rounded text-xs transition-all uppercase group cursor-pointer"
-            >
-              <span>REGISTER ANOTHER TEAM</span>
-              <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button
-              onClick={() => { sound.playClick?.(); onBack(); }}
-              className="text-xs text-zinc-500 hover:text-zinc-300 underline transition-colors"
-            >
-              ← BACK TO MAIN PORTAL
-            </button>
+
+            <div className="space-y-3 pt-1">
+              <button
+                onClick={() => { setStatus("idle"); setForm(initialForm); }}
+                onMouseEnter={() => sound.playHover?.()}
+                className="w-full flex items-center justify-center gap-2.5 bg-red-700 hover:bg-red-600 active:bg-red-800 border border-red-500/60 text-white font-black tracking-widest px-4 py-3 rounded-md text-[11px] transition-all uppercase cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-[#06060c]"
+              >
+                <span>Register Another Team</span>
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+              <button
+                onClick={() => { sound.playClick?.(); onBack(); }}
+                className="w-full flex items-center justify-center gap-1.5 text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors py-2 focus:outline-none focus:ring-1 focus:ring-zinc-600 rounded"
+              >
+                <ArrowLeft className="h-3 w-3" />
+                Back to Portal
+              </button>
+            </div>
           </div>
-        </div>
+        </main>
+        <RegistrationFooter />
       </div>
     );
   }
 
+  // ── FORM PAGE ──
   return (
     <div className="min-h-screen bg-[#020202] text-gray-100 font-mono flex flex-col relative overflow-x-hidden">
-      
-      {/* Header */}
-      <header className="relative z-20 w-full px-6 py-4 flex justify-between items-center bg-black/85 backdrop-blur-md border-b border-red-600/30">
-        <div className="flex items-center space-x-4">
-          <img
-            src="/mask.png"
-            alt="Null Origin"
-            className="h-10 md:h-14 object-contain filter drop-shadow-[0_0_12px_rgba(239,68,68,0.7)]"
-            onError={(e) => {
-              const t = e.target as HTMLImageElement;
-              if (t.src.endsWith("/mask.png")) t.src = "/logo.png";
-              else t.style.display = "none";
-            }}
-          />
-          <span className="text-[13px] md:text-base tracking-widest text-zinc-100 uppercase font-black font-sans">
-            NULL ORIGIN <span className="hidden sm:inline text-red-500 font-mono">// SECURED PORTAL</span>
-          </span>
-        </div>
-        <button
-          onClick={() => { sound.playClick?.(); onBack(); }}
-          onMouseEnter={() => sound.playHover?.()}
-          className="flex items-center space-x-2 px-4 py-2 border border-zinc-800 rounded hover:border-red-600/50 hover:text-red-400 text-zinc-400 text-xs font-bold tracking-widest uppercase transition-all"
-        >
-          ← BACK TO PORTAL
-        </button>
-      </header>
+      <RegistrationHeader onBack={onBack} />
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 py-10 relative z-10">
 
         {/* Terminal breadcrumb */}
-        <div className="mb-6 text-xs text-zinc-500 select-none flex items-center space-x-2">
+        <div className="mb-7 text-[11px] md:text-xs text-zinc-500 select-none flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="text-red-500 font-bold">operator@nullorigin:~$</span>
-          <span className="text-emerald-400 font-semibold pl-1">./register --mode=team --portal=nullorigin.cyberhx.com</span>
-          <span className="h-4 w-1.5 bg-red-600 inline-block animate-pulse"></span>
+          <span className="text-emerald-400 font-semibold">./register --mode=team --portal=nullorigin.cyberhx.com</span>
+          <span className="h-4 w-1.5 bg-red-600 inline-block animate-pulse" aria-hidden="true" />
         </div>
 
-        {/* Status Badges */}
-        <div className="flex flex-wrap gap-3 mb-8">
-          <div className="flex items-center space-x-2 bg-emerald-950/30 border border-emerald-700/60 rounded px-3 py-2 animate-pulse">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span className="text-[11px] tracking-widest text-emerald-400 font-black uppercase">
-              REGISTRATION LIVE
-            </span>
+        {/* Status row */}
+        <div className="flex flex-wrap gap-2 mb-8" role="status" aria-label="Registration status">
+          <div className="flex items-center gap-2 bg-emerald-950/20 border border-emerald-800/50 rounded-md px-3 py-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
+            <span className="text-[10px] tracking-widest text-emerald-400 font-black uppercase">Registration Live</span>
           </div>
-          <div className="flex items-center space-x-2 bg-red-950/20 border border-red-800/40 rounded px-3 py-2">
-            <Calendar className="h-3.5 w-3.5 text-red-400" />
-            <span className="text-[11px] tracking-widest text-red-400 font-bold uppercase">
-              Registration closes: 08 July 2025
-            </span>
+          <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800 rounded-md px-3 py-1.5">
+            <Calendar className="h-3 w-3 text-red-400 flex-shrink-0" aria-hidden="true" />
+            <span className="text-[10px] tracking-widest text-zinc-400 font-bold uppercase">Closes 08 July 2025</span>
           </div>
-          <div className="flex items-center space-x-2 bg-zinc-900/40 border border-zinc-800 rounded px-3 py-2">
-            <Users className="h-3.5 w-3.5 text-zinc-400" />
-            <span className="text-[11px] tracking-widest text-zinc-400 font-bold uppercase">
-              Team Size: 1–4 Members
-            </span>
+          <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800 rounded-md px-3 py-1.5">
+            <Users className="h-3 w-3 text-zinc-400 flex-shrink-0" aria-hidden="true" />
+            <span className="text-[10px] tracking-widest text-zinc-400 font-bold uppercase">1–4 Members</span>
           </div>
         </div>
 
-        {/* Form Card */}
-        <div className="bg-[#06060c]/85 border border-zinc-900 hover:border-red-900/30 transition-colors rounded-lg p-6 md:p-8 shadow-2xl relative">
-          <div className="absolute top-0 right-0 px-3 py-1 bg-red-700 text-black text-[9px] font-black uppercase tracking-widest">
-            REG OPEN
-          </div>
+        {/* Form card */}
+        <div className="bg-[#06060c]/90 border border-zinc-800/80 rounded-xl shadow-2xl relative overflow-hidden">
+          {/* Top gradient accent */}
+          <div className="h-[2px] w-full bg-gradient-to-r from-red-700 via-red-500 to-transparent" aria-hidden="true" />
 
-          <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-zinc-900">
-            <Terminal className="h-5 w-5 text-red-500 animate-pulse" />
-            <div>
-              <h1 className="text-sm font-black tracking-widest text-zinc-100 uppercase">
-                TEAM REGISTRATION FORM
-              </h1>
-              <p className="text-[10px] text-zinc-500 mt-0.5">NULL ORIGIN CTF // OFFICIAL OPERATOR ENROLLMENT</p>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-
-            {/* Team Info */}
-            <div className="space-y-4">
-              <div className="text-[10px] tracking-widest text-red-400 font-black uppercase border-l-2 border-red-600 pl-2">
-                TEAM INFORMATION
+          <div className="p-6 md:p-8">
+            {/* Card header */}
+            <div className="flex items-center gap-3 mb-7 pb-5 border-b border-zinc-800/80">
+              <div className="p-2 bg-red-950/30 border border-red-900/40 rounded-md">
+                <Terminal className="h-4 w-4 text-red-500" aria-hidden="true" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>
-                    <Users className="h-3 w-3 text-red-500" />
-                    Team Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={form.teamName}
-                    onChange={(e) => handleChange("teamName", e.target.value)}
-                    placeholder="TEAM_NAME"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>
-                    <Globe className="h-3 w-3 text-red-500" />
-                    Country <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={form.country}
-                    onChange={(e) => handleChange("country", e.target.value)}
-                    placeholder="COUNTRY"
-                    className={inputClass}
-                  />
-                </div>
+              <div>
+                <h1 className="text-[13px] font-black tracking-widest text-zinc-100 uppercase">
+                  Team Registration Form
+                </h1>
+                <p className="text-[10px] text-zinc-600 mt-0.5 tracking-wider">
+                  NULL ORIGIN CTF · OFFICIAL OPERATOR ENROLLMENT
+                </p>
               </div>
             </div>
 
-            {/* Team Leader */}
-            <div className="space-y-4">
-              <div className="text-[10px] tracking-widest text-red-400 font-black uppercase border-l-2 border-red-600 pl-2">
-                TEAM LEADER
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>
-                    <User className="h-3 w-3 text-red-500" />
-                    Leader Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={form.leaderName}
-                    onChange={(e) => handleChange("leaderName", e.target.value)}
-                    placeholder="LEADER_NAME"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>
-                    <Mail className="h-3 w-3 text-red-500" />
-                    Leader Email <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={form.leaderEmail}
-                    onChange={(e) => handleChange("leaderEmail", e.target.value)}
-                    placeholder="LEADER@DOMAIN.COM"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-8" noValidate>
 
-            {/* Member 1 */}
-            <div className="space-y-4">
-              <button
-                type="button"
-                onClick={() => toggleMember(1)}
-                className="w-full flex items-center justify-between text-[10px] tracking-widest text-emerald-400 font-black uppercase border-l-2 border-emerald-600 pl-2 hover:text-emerald-300 transition-colors"
-              >
-                <span>MEMBER 1 <span className="text-red-500">*</span></span>
-                {expandedMembers.includes(1) ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-              </button>
-              {expandedMembers.includes(1) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-3 border-l border-zinc-800">
+              {/* ── Team Information ── */}
+              <fieldset className="space-y-4">
+                <legend className={`${sectionHeadingClass} border-red-600 text-red-400`}>
+                  Team Information
+                </legend>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className={labelClass}><Hash className="h-3 w-3 text-emerald-600" />Discord Username <span className="text-red-500">*</span></label>
-                    <input type="text" required value={form.member1Discord} onChange={(e) => handleChange("member1Discord", e.target.value)} placeholder="USERNAME#0000" className={inputClass} />
+                    <label htmlFor="teamName" className={labelClass}>
+                      <Users className="h-3 w-3 text-red-500" aria-hidden="true" />
+                      Team Name <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+                    </label>
+                    <input
+                      id="teamName"
+                      type="text"
+                      required
+                      value={form.teamName}
+                      onChange={(e) => handleChange("teamName", e.target.value)}
+                      placeholder="TEAM_NAME"
+                      autoComplete="off"
+                      className={inputClass}
+                    />
                   </div>
                   <div>
-                    <label className={labelClass}><Globe className="h-3 w-3 text-emerald-600" />CTFtime Profile <span className="text-red-500">*</span></label>
-                    <input type="text" required value={form.member1CTFtime} onChange={(e) => handleChange("member1CTFtime", e.target.value)} placeholder="CTFTIME.ORG/USER/..." className={inputClass} />
+                    <label htmlFor="country" className={labelClass}>
+                      <Globe className="h-3 w-3 text-red-500" aria-hidden="true" />
+                      Country <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+                    </label>
+                    <input
+                      id="country"
+                      type="text"
+                      required
+                      value={form.country}
+                      onChange={(e) => handleChange("country", e.target.value)}
+                      placeholder="COUNTRY"
+                      autoComplete="country-name"
+                      className={inputClass}
+                    />
                   </div>
                 </div>
-              )}
-            </div>
+              </fieldset>
 
-            {/* Members 2–4 */}
-            {[2, 3, 4].map((n) => {
-              const dKey = `member${n}Discord` as keyof FormData;
-              const cKey = `member${n}CTFtime` as keyof FormData;
-              return (
-                <div key={n} className="space-y-4">
-                  <button
-                    type="button"
-                    onClick={() => toggleMember(n)}
-                    className="w-full flex items-center justify-between text-[10px] tracking-widest text-zinc-500 font-black uppercase border-l-2 border-zinc-700 pl-2 hover:text-zinc-300 transition-colors"
-                  >
-                    <span>MEMBER {n} <span className="text-zinc-700">(OPTIONAL)</span></span>
-                    {expandedMembers.includes(n) ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                  </button>
-                  {expandedMembers.includes(n) && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-3 border-l border-zinc-800">
-                      <div>
-                        <label className={labelClass}><Hash className="h-3 w-3 text-zinc-600" />Discord Username <span className="text-zinc-700">(Optional)</span></label>
-                        <input type="text" value={form[dKey] as string} onChange={(e) => handleChange(dKey, e.target.value)} placeholder="USERNAME#0000" className={inputClass} />
-                      </div>
-                      <div>
-                        <label className={labelClass}><Globe className="h-3 w-3 text-zinc-600" />CTFtime Profile <span className="text-zinc-700">(Optional)</span></label>
-                        <input type="text" value={form[cKey] as string} onChange={(e) => handleChange(cKey, e.target.value)} placeholder="CTFTIME.ORG/USER/..." className={inputClass} />
-                      </div>
+              {/* ── Team Leader ── */}
+              <fieldset className="space-y-4">
+                <legend className={`${sectionHeadingClass} border-red-600 text-red-400`}>
+                  Team Leader
+                </legend>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="leaderName" className={labelClass}>
+                      <User className="h-3 w-3 text-red-500" aria-hidden="true" />
+                      Full Name <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+                    </label>
+                    <input
+                      id="leaderName"
+                      type="text"
+                      required
+                      value={form.leaderName}
+                      onChange={(e) => handleChange("leaderName", e.target.value)}
+                      placeholder="LEADER_NAME"
+                      autoComplete="name"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="leaderEmail" className={labelClass}>
+                      <Mail className="h-3 w-3 text-red-500" aria-hidden="true" />
+                      Email <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+                    </label>
+                    <input
+                      id="leaderEmail"
+                      type="email"
+                      required
+                      value={form.leaderEmail}
+                      onChange={(e) => handleChange("leaderEmail", e.target.value)}
+                      placeholder="LEADER@DOMAIN.COM"
+                      autoComplete="email"
+                      inputMode="email"
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              {/* ── Member 1 (required) ── */}
+              <fieldset className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => toggleMember(1)}
+                  aria-expanded={expandedMembers.includes(1)}
+                  aria-controls="member1-fields"
+                  className="w-full flex items-center justify-between focus:outline-none focus:ring-1 focus:ring-emerald-600/40 rounded px-1 py-0.5"
+                >
+                  <legend className={`${sectionHeadingClass} border-emerald-600 text-emerald-400 cursor-pointer`}>
+                    Member 1 <span className="text-red-500 ml-1" aria-label="required">*</span>
+                  </legend>
+                  {expandedMembers.includes(1)
+                    ? <ChevronUp className="h-3 w-3 text-zinc-500" aria-hidden="true" />
+                    : <ChevronDown className="h-3 w-3 text-zinc-500" aria-hidden="true" />}
+                </button>
+                {expandedMembers.includes(1) && (
+                  <div id="member1-fields" className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-3 border-l border-zinc-800">
+                    <div>
+                      <label htmlFor="m1discord" className={labelClass}>
+                        <Hash className="h-3 w-3 text-emerald-600" aria-hidden="true" />
+                        Discord Username <span className="text-red-500 ml-0.5">*</span>
+                      </label>
+                      <input id="m1discord" type="text" required value={form.member1Discord} onChange={(e) => handleChange("member1Discord", e.target.value)} placeholder="USERNAME" autoComplete="off" className={inputClass} />
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                    <div>
+                      <label htmlFor="m1ctftime" className={labelClass}>
+                        <ExternalLink className="h-3 w-3 text-emerald-600" aria-hidden="true" />
+                        CTFtime Profile <span className="text-red-500 ml-0.5">*</span>
+                      </label>
+                      <input id="m1ctftime" type="url" required value={form.member1CTFtime} onChange={(e) => handleChange("member1CTFtime", e.target.value)} placeholder="CTFTIME.ORG/USER/..." autoComplete="off" inputMode="url" className={inputClass} />
+                    </div>
+                  </div>
+                )}
+              </fieldset>
 
-            {/* Error */}
-            {status === "error" && (
-              <div className="flex items-start space-x-3 bg-red-950/30 border border-red-800/60 rounded p-3 text-xs">
-                <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="text-red-400 font-bold uppercase tracking-wider">SUBMISSION FAILED</p>
-                  <p className="text-red-300/70">{errorMsg}</p>
-                </div>
-              </div>
-            )}
+              {/* ── Members 2–4 (optional) ── */}
+              {[2, 3, 4].map((n) => {
+                const dKey = `member${n}Discord` as keyof FormData;
+                const cKey = `member${n}CTFtime` as keyof FormData;
+                return (
+                  <fieldset key={n} className="space-y-3">
+                    <button
+                      type="button"
+                      onClick={() => toggleMember(n)}
+                      aria-expanded={expandedMembers.includes(n)}
+                      aria-controls={`member${n}-fields`}
+                      className="w-full flex items-center justify-between focus:outline-none focus:ring-1 focus:ring-zinc-600/40 rounded px-1 py-0.5"
+                    >
+                      <legend className={`${sectionHeadingClass} border-zinc-700 text-zinc-500 cursor-pointer`}>
+                        Member {n}{" "}
+                        <span className="text-zinc-700 font-normal normal-case ml-1 text-[9px]">(optional)</span>
+                      </legend>
+                      {expandedMembers.includes(n)
+                        ? <ChevronUp className="h-3 w-3 text-zinc-600" aria-hidden="true" />
+                        : <ChevronDown className="h-3 w-3 text-zinc-600" aria-hidden="true" />}
+                    </button>
+                    {expandedMembers.includes(n) && (
+                      <div id={`member${n}-fields`} className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-3 border-l border-zinc-800">
+                        <div>
+                          <label htmlFor={`m${n}discord`} className={labelClass}>
+                            <Hash className="h-3 w-3 text-zinc-600" aria-hidden="true" />
+                            Discord Username
+                          </label>
+                          <input id={`m${n}discord`} type="text" value={form[dKey] as string} onChange={(e) => handleChange(dKey, e.target.value)} placeholder="USERNAME" autoComplete="off" className={inputClass} />
+                        </div>
+                        <div>
+                          <label htmlFor={`m${n}ctftime`} className={labelClass}>
+                            <ExternalLink className="h-3 w-3 text-zinc-600" aria-hidden="true" />
+                            CTFtime Profile
+                          </label>
+                          <input id={`m${n}ctftime`} type="url" value={form[cKey] as string} onChange={(e) => handleChange(cKey, e.target.value)} placeholder="CTFTIME.ORG/USER/..." autoComplete="off" inputMode="url" className={inputClass} />
+                        </div>
+                      </div>
+                    )}
+                  </fieldset>
+                );
+              })}
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              onMouseEnter={() => sound.playHover?.()}
-              className="w-full flex items-center justify-center space-x-2 bg-red-950/80 border border-red-600 hover:bg-red-900 disabled:opacity-60 disabled:cursor-not-allowed hover:text-white text-red-100 font-bold tracking-widest px-4 py-3.5 rounded text-xs transition-all uppercase group cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.3)]"
-            >
-              {status === "loading" ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>ENCRYPTING TEAM DATA...</span>
-                </>
-              ) : (
-                <>
-                  <ShieldCheck className="h-4 w-4" />
-                  <span>INITIALIZE TEAM REGISTRATION</span>
-                  <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-                </>
+              {/* ── Error ── */}
+              {status === "error" && (
+                <div
+                  role="alert"
+                  aria-live="assertive"
+                  className="flex items-start gap-3 bg-red-950/25 border border-red-800/50 rounded-md p-4"
+                >
+                  <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" aria-hidden="true" />
+                  <div className="space-y-1">
+                    <p className="text-[11px] text-red-400 font-black uppercase tracking-wider">Submission Failed</p>
+                    <p className="text-[11px] text-red-300/70 font-sans">{errorMsg}</p>
+                  </div>
+                </div>
               )}
-            </button>
 
-            <p className="text-[10px] text-zinc-600 text-center tracking-wider">
-              BY REGISTERING YOU AGREE TO PARTICIPATE ETHICALLY // NULL ORIGIN CTF 2025
-            </p>
+              {/* ── Submit ── */}
+              <div className="space-y-3 pt-1">
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  onMouseEnter={() => sound.playHover?.()}
+                  aria-label="Submit team registration"
+                  aria-busy={status === "loading"}
+                  className="w-full flex items-center justify-center gap-3 bg-red-700 hover:bg-red-600 active:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed border border-red-500/60 hover:border-red-400 text-white font-black tracking-widest px-5 py-3.5 rounded-md text-[12px] transition-all uppercase cursor-pointer shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:shadow-[0_0_35px_rgba(239,68,68,0.35)] focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-[#06060c] group"
+                >
+                  {status === "loading" ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      <span>Submitting Registration…</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                      <span>Register Team</span>
+                      <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                    </>
+                  )}
+                </button>
 
-          </form>
+                <p className="text-[10px] text-zinc-700 text-center tracking-wider font-sans">
+                  By registering you agree to participate ethically · Null Origin CTF 2025
+                </p>
+              </div>
+
+            </form>
+          </div>
         </div>
 
       </main>
 
-      <footer className="relative z-10 w-full text-center py-6 bg-black/95 border-t border-zinc-950 mt-auto">
-        <p className="text-[10px] text-zinc-600 tracking-widest font-mono">
-          © {new Date().getFullYear()} NULL ORIGIN CTF // SECURED OVER HTTPS // DOMAIN APPROVED: NULLORIGIN.CYBERHX.COM
-        </p>
-      </footer>
+      <RegistrationFooter />
     </div>
   );
 }
 
-// Small inline icon helper
-function ExternalLinkIcon({ className }: { className?: string }) {
+// ─── Shared sub-components ───────────────────
+
+function RegistrationHeader({ onBack }: { onBack: () => void }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-      <polyline points="15 3 21 3 21 9" />
-      <line x1="10" y1="14" x2="21" y2="3" />
-    </svg>
+    <header className="relative z-20 w-full px-5 md:px-8 py-3 md:py-4 flex justify-between items-center bg-black/90 backdrop-blur-md border-b border-red-600/25">
+      <div className="flex items-center gap-3 md:gap-4">
+        <img
+          src="/mask.png"
+          alt="Null Origin"
+          className="h-9 md:h-12 object-contain filter drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]"
+          onError={(e) => {
+            const t = e.target as HTMLImageElement;
+            if (t.src.endsWith("/mask.png")) t.src = "/logo.png";
+            else t.style.display = "none";
+          }}
+        />
+        <span className="text-[12px] md:text-[14px] tracking-widest text-zinc-100 uppercase font-black font-sans">
+          NULL ORIGIN <span className="hidden sm:inline text-red-500 font-mono">// SECURED PORTAL</span>
+        </span>
+      </div>
+      <button
+        onClick={onBack}
+        onMouseEnter={() => sound.playHover?.()}
+        aria-label="Back to portal"
+        className="flex items-center gap-2 px-3 md:px-4 py-2 border border-zinc-800 rounded-md hover:border-red-600/40 hover:text-red-400 hover:bg-red-950/10 text-zinc-500 text-[11px] font-bold tracking-widest uppercase transition-all focus:outline-none focus:ring-2 focus:ring-red-600/40 focus:ring-offset-1 focus:ring-offset-black cursor-pointer"
+      >
+        <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+        <span className="hidden sm:inline">Back</span>
+      </button>
+    </header>
+  );
+}
+
+function RegistrationFooter() {
+  return (
+    <footer className="relative z-10 w-full text-center py-5 bg-black/95 border-t border-zinc-900/60 mt-auto">
+      <p className="text-[10px] text-zinc-700 tracking-wider font-mono">
+        © {new Date().getFullYear()} NULL ORIGIN CTF · NULLORIGIN.CYBERHX.COM · SECURED OVER HTTPS
+      </p>
+    </footer>
   );
 }
