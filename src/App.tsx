@@ -7,12 +7,24 @@ import { sound } from "./utils/audio";
 import { 
   Volume2, 
   VolumeX, 
+  Mail, 
+  Terminal, 
+  Calendar, 
   Share2, 
+  Clipboard, 
+  ShieldCheck, 
+  Cpu, 
   ArrowRight,
   Download,
   Users,
   Trash2,
-  ShieldCheck,
+  Key,
+  Info,
+  HelpCircle,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  FileSpreadsheet
 } from "lucide-react";
 
 interface Cadet {
@@ -24,8 +36,21 @@ interface Cadet {
 
 function HomePage() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [codename, setCodename] = useState("");
+  const [preRegistered, setPreRegistered] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [copiedLink, setCopiedLink] = useState(false);
+  
+  const [timeLeft, setTimeLeft] = useState({
+    days: "24",
+    hours: "08",
+    minutes: "47",
+    seconds: "12",
+  });
+
+  const [teaserInput, setTeaserInput] = useState("");
+  const [teaserStatus, setTeaserStatus] = useState<"idle" | "correct" | "incorrect">("idle");
 
   const [logs, setLogs] = useState<string[]>([
     "INITIALIZING SECURE SOCKET SHELL v4.8...",
@@ -50,6 +75,45 @@ function HomePage() {
   };
 
   useEffect(() => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 24);
+    targetDate.setHours(targetDate.getHours() + 8);
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const difference = targetDate.getTime() - now;
+
+      if (difference <= 0) {
+        clearInterval(interval);
+        return;
+      }
+
+      const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+      setTimeLeft({
+        days: String(d).padStart(2, "0"),
+        hours: String(h).padStart(2, "0"),
+        minutes: String(m).padStart(2, "0"),
+        seconds: String(s).padStart(2, "0"),
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("null_origin_ctf_preregistered");
+    if (saved === "true") {
+      setPreRegistered(true);
+      const savedEmail = localStorage.getItem("null_origin_ctf_email") || "";
+      const savedCname = localStorage.getItem("null_origin_ctf_codename") || "";
+      setEmail(savedEmail);
+      setCodename(savedCname);
+    }
+
     const stored = localStorage.getItem("null_origin_ctf_roster");
     if (stored) {
       try {
@@ -90,6 +154,66 @@ function HomePage() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handlePreRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    sound.playSuccess();
+    const finalCodename = codename.trim() || `Operator_${Math.floor(1000 + Math.random() * 9000)}`;
+    setCodename(finalCodename);
+    setPreRegistered(true);
+
+    localStorage.setItem("null_origin_ctf_preregistered", "true");
+    localStorage.setItem("null_origin_ctf_email", email);
+    localStorage.setItem("null_origin_ctf_codename", finalCodename);
+
+    const newCadet: Cadet = {
+      email: email.trim(),
+      codename: finalCodename,
+      solved: teaserStatus === "correct",
+      timestamp: new Date().toISOString(),
+    };
+
+    const updatedRoster = [newCadet, ...registrations.filter(r => r.email.toLowerCase() !== email.trim().toLowerCase())];
+    setRegistrations(updatedRoster);
+    localStorage.setItem("null_origin_ctf_roster", JSON.stringify(updatedRoster));
+
+    setLogs((prev) => [
+      ...prev,
+      `[REGISTRANT] Added '${finalCodename}' into Null Origin queue. Checksum active.`,
+    ]);
+  };
+
+  const handleTeaserVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanInput = teaserInput.trim().toLowerCase();
+    
+    if (cleanInput.includes("flag{nh11_rot13_d3c0d3}") || cleanInput === "flag{nh11_rot13_d3c0d3}") {
+      setTeaserStatus("correct");
+      sound.playSuccess();
+      setLogs((prev) => [
+        ...prev,
+        `[TEASER SOLVED] Flag decrypted successfully! Decrypted message verified.`,
+      ]);
+
+      const currentEmail = localStorage.getItem("null_origin_ctf_email");
+      if (currentEmail) {
+        const updatedRoster = registrations.map(r => {
+          if (r.email.toLowerCase() === currentEmail.trim().toLowerCase()) {
+            return { ...r, solved: true };
+          }
+          return r;
+        });
+        setRegistrations(updatedRoster);
+        localStorage.setItem("null_origin_ctf_roster", JSON.stringify(updatedRoster));
+      }
+    } else {
+      setTeaserStatus("incorrect");
+      sound.playError();
+      setTimeout(() => setTeaserStatus("idle"), 2000);
+    }
+  };
 
   const handleStatusClick = () => {
     sound.playClick();
@@ -135,6 +259,18 @@ function HomePage() {
       setRegistrations(defaultRoster);
       localStorage.setItem("null_origin_ctf_roster", JSON.stringify(defaultRoster));
     }
+  };
+
+  const shareOnTwitter = () => {
+    sound.playEnter();
+    const message = `I have secured my operator clearance code & codename "${codename || 'Anonym'}" for Null Origin CTF early access. Pre-registrations are live right now! Try to crack the teaser cipher if you dare. 💻🔓\n\nReserve portal here: https://nullorigin.cyberhx.com`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
+  const shareOnTelegram = () => {
+    sound.playEnter();
+    const message = `Reserve your operator codename for Null Origin CTF. Solve the launch teaser cipher!\nLaunch link: https://nullorigin.cyberhx.com`;
+    window.open(`https://t.me/share/url?url=https://nullorigin.cyberhx.com&text=${encodeURIComponent(message)}`, "_blank");
   };
 
   const copyShareLink = () => {
@@ -244,19 +380,164 @@ function HomePage() {
                 />
               </div>
 
-
+              <div 
+                className="pt-2 text-md md:text-xl font-bold tracking-widest text-[#22c55e] flex items-center space-x-2 select-none"
+                onMouseEnter={() => sound.playHover()}
+              >
+                <span>COMING SOON</span>
+                <span className="w-2 h-4 bg-[#22c55e] animate-pulse"></span>
+              </div>
             </div>
 
-            {/* Registration CTA */}
-            <div className="w-full max-w-lg">
-              <button
-                onClick={() => { sound.playClick(); navigate("/registration"); }}
-                onMouseEnter={() => sound.playHover()}
-                className="w-full flex items-center justify-center space-x-3 bg-red-700 hover:bg-red-600 border border-red-500 hover:border-red-400 text-white font-black tracking-widest px-6 py-5 rounded text-sm md:text-base transition-all uppercase group cursor-pointer shadow-[0_0_25px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_rgba(239,68,68,0.5)] active:scale-[0.98]"
-              >
-                <span>REGISTER NOW</span>
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+            {/* Countdown */}
+            <div 
+              onMouseEnter={() => sound.playHover()}
+              className="w-full max-w-md bg-zinc-950/90 border border-zinc-900 rounded p-4 shadow-2xl relative overflow-hidden group hover:border-[#22c55e]/40 transition-all duration-300"
+            >
+              <div className="absolute top-0 left-0 w-16 h-[1px] bg-[#22c55e]/30"></div>
+              <div className="absolute top-0 left-0 w-[1px] h-16 bg-[#22c55e]/30"></div>
+              
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] tracking-widest text-[#22c55e] uppercase flex items-center space-x-1">
+                  <Calendar className="h-3 w-3 text-[#22c55e] mr-1 animate-pulse" />
+                  LAUNCH_TIMELINE_COUNTDOWN
+                </span>
+                <span className="text-[9px] bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/30 px-1.5 py-0.5 rounded uppercase font-bold select-none">
+                  T-MINUS STATUS
+                </span>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 text-center">
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">{timeLeft.days}</p>
+                  <span className="text-[8px] tracking-wider text-zinc-500 uppercase">DAYS</span>
+                </div>
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">{timeLeft.hours}</p>
+                  <span className="text-[8px] tracking-wider text-zinc-500 uppercase">HRS</span>
+                </div>
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">{timeLeft.minutes}</p>
+                  <span className="text-[8px] tracking-wider text-zinc-500 uppercase">MINS</span>
+                </div>
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-red-600 animate-pulse">{timeLeft.seconds}</p>
+                  <span className="text-[8px] tracking-wider text-zinc-500 uppercase">SECS</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pre-reg form */}
+            <div className="w-full max-w-lg bg-[#06060c]/85 border border-zinc-900 hover:border-red-900/30 transition-colors rounded p-6 shadow-2xl relative">
+              <div className="absolute top-0 right-0 px-2.5 py-0.5 bg-red-700 text-black text-[9px] font-black uppercase tracking-widest animate-pulse">
+                Pre-Reg Active
+              </div>
+
+              {preRegistered ? (
+                <div className="space-y-4 animate-[fadeIn_1s] py-2">
+                  <div className="flex items-center space-x-3 text-emerald-400">
+                    <ShieldCheck className="h-8 w-8 shrink-0" />
+                    <div>
+                      <h3 className="font-bold text-sm tracking-wide uppercase">PRE-REGISTRATION CONFIRMED</h3>
+                      <p className="text-xs text-zinc-400">We have recorded your email and codename successfully.</p>
+                    </div>
+                  </div>
+                  <div className="bg-[#09090c] border border-zinc-800 p-4 rounded text-xs space-y-2">
+                    <p className="text-emerald-500 font-bold truncate">REGISTERED CODENAME: {codename || "ANONYMOUS CADET"}</p>
+                    <p className="text-zinc-500">EMAIL ADDRESS: {email}</p>
+                    <p className="text-zinc-500 text-[10.5px] pt-2 border-t border-zinc-900 leading-relaxed">
+                      Your profile has been saved. We will now be able to automatically send you the launch invitation, official links, and start instructions directly to your email as soon as the tournament goes live!
+                    </p>
+                  </div>
+
+                  <div className="pt-2 space-y-2">
+                    <p className="text-[10px] text-zinc-500 tracking-wider">RECRUIT CO-OPERATORS TO FORM COMPROMISE SQUAD:</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button 
+                        onClick={shareOnTwitter}
+                        onMouseEnter={() => sound.playHover()}
+                        className="flex items-center space-x-1.5 px-3.5 py-2 bg-sky-950/20 border border-sky-900/60 hover:border-sky-500 hover:text-white text-sky-400 rounded text-[11px] font-bold tracking-wider cursor-pointer transition-all active:scale-95"
+                      >
+                        <Share2 className="h-3 w-3" />
+                        <span>SHARE ON X / TWITTER</span>
+                      </button>
+                      <button 
+                        onClick={shareOnTelegram}
+                        onMouseEnter={() => sound.playHover()}
+                        className="flex items-center space-x-1.5 px-3.5 py-2 bg-blue-950/20 border border-blue-900/60 hover:border-blue-500 hover:text-white text-blue-400 rounded text-[11px] font-bold tracking-wider cursor-pointer transition-all active:scale-95"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        <span>SHARE ON TELEGRAM</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => { setPreRegistered(false); setEmail(""); }}
+                    onMouseEnter={() => sound.playHover()}
+                    className="text-xs text-zinc-400 underline hover:text-white transition-all cursor-pointer block pt-1"
+                  >
+                    Register another cadet profile
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handlePreRegister} className="space-y-4">
+                  <div className="space-y-2">
+                    <h3 className="text-xs font-bold tracking-widest text-[#22c55e] uppercase flex items-center">
+                      <Terminal className="h-3 w-3 text-red-500 mr-1 animate-pulse" />
+                      PRE-REGISTER FOR LAUNCH NOTIFICATIONS
+                    </h3>
+                    <div className="space-y-1.5 text-xs text-zinc-400 leading-relaxed font-sans">
+                      <p>
+                        Enter your Email ID and Codename below! We log all registration entries so we can automatically deliver prompt launch invites, direct challenge links, and priority start codes via email the instant the platform goes live.
+                      </p>
+                      <p className="text-zinc-500 border-l-2 border-red-800/60 pl-2 italic">
+                        All registered operators will receive exclusive challenge updates, early portal access instructions, and tournament details straight to their inbox.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onMouseEnter={() => sound.playHover()}
+                      onChange={(e) => { setEmail(e.target.value); handleKeyInteraction(); }}
+                      placeholder="OPERATOR_EMAIL (e.g. cadet@domain.com)"
+                      className="w-full bg-black/95 border border-zinc-850 hover:border-zinc-700 focus:border-red-600 focus:outline-none rounded px-3.5 py-2.5 text-xs md:text-sm tracking-wider text-emerald-400 placeholder-zinc-800 uppercase focus:ring-1 focus:ring-red-600/30 transition-all font-mono"
+                    />
+                    <input
+                      type="text"
+                      value={codename}
+                      onMouseEnter={() => sound.playHover()}
+                      onChange={(e) => { setCodename(e.target.value); handleKeyInteraction(); }}
+                      placeholder="DESIRED_CODENAME (OPTIONAL)"
+                      maxLength={24}
+                      className="w-full bg-black/95 border border-zinc-850 hover:border-zinc-700 focus:border-[#22c55e] focus:outline-none rounded px-3.5 py-2.5 text-xs md:text-sm tracking-wider text-[#22c55e] placeholder-zinc-800 uppercase focus:ring-1 focus:ring-[#22c55e]/30 transition-all font-mono"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    onMouseEnter={() => sound.playHover()}
+                    className="w-full flex items-center justify-center space-x-2 bg-red-950/80 border border-red-600 hover:bg-red-900 hover:text-white text-red-100 font-bold tracking-widest px-4 py-3 rounded text-xs transition-all uppercase group cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_20px_rgba(239,68,68,0.25)]"
+                  >
+                    <span>INITIALIZE SECURITY INGRESS</span>
+                    <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                  </button>
+
+                  {/* CTA to full registration */}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/registration")}
+                    onMouseEnter={() => sound.playHover()}
+                    className="w-full flex items-center justify-center space-x-2 bg-zinc-900/60 border border-zinc-700 hover:border-red-600/50 hover:text-red-400 text-zinc-400 font-bold tracking-widest px-4 py-2.5 rounded text-xs transition-all uppercase group cursor-pointer"
+                  >
+                    <span>TEAM REGISTRATION →</span>
+                  </button>
+                </form>
+              )}
             </div>
 
           </div>
@@ -271,7 +552,71 @@ function HomePage() {
               <HackerMask />
             </div>
 
+            {/* Teaser box */}
+            <div 
+              className="w-full max-w-sm bg-black/95 border border-zinc-900 rounded p-4 shadow-xl mt-4 space-y-3 hover:border-red-900/30 transition-all duration-300"
+              onMouseEnter={() => sound.playHover()}
+            >
+              <div className="flex justify-between items-center border-b border-zinc-900 pb-2">
+                <span className="text-[10px] tracking-widest text-[#22c55e] uppercase font-bold flex items-center">
+                  <Cpu className="h-3.5 w-3.5 mr-1" />
+                  ALPHA_NODE_ROT13_DECRYPTER
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-red-950/40 text-red-400 border border-red-900/40 select-none font-bold uppercase tracking-wider">
+                  DIFFICULTY: EASY
+                </span>
+              </div>
 
+              <div className="text-[11px] space-y-1.5 text-zinc-400 font-mono">
+                <p className="text-zinc-500">Decrypt the teaser cipher block to captured credential:</p>
+                <div className="p-2 bg-[#050505] border border-zinc-800 rounded font-mono text-[#22c55e] break-all select-all text-[11.5px] cursor-help tracking-widest">
+                  Ciphertext: synt{"{aH11_ebg13_q3p0q3}"}
+                </div>
+              </div>
+
+              <form onSubmit={handleTeaserVerify} className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  placeholder="FLAG{...}"
+                  value={teaserInput}
+                  onMouseEnter={() => sound.playHover()}
+                  onChange={(e) => { setTeaserInput(e.target.value); handleKeyInteraction(); }}
+                  className="bg-black border border-zinc-850 hover:border-zinc-700 text-xs text-white rounded px-3 py-2 flex-1 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600/30 transition-all font-mono uppercase"
+                />
+                <button
+                  type="submit"
+                  onMouseEnter={() => sound.playHover()}
+                  className="bg-red-955 border border-red-900 hover:border-red-600 text-[10px] tracking-wider uppercase font-bold text-red-200 hover:text-white px-4 py-2 rounded transition-all cursor-pointer"
+                >
+                  VERIFY
+                </button>
+              </form>
+
+              {teaserStatus === "correct" && (
+                <div className="space-y-2 bg-emerald-950/20 border border-emerald-900/60 p-3 rounded">
+                  <div className="text-[10px] text-emerald-400 font-bold uppercase animate-pulse leading-none">
+                    ✓ ACCEPTED! Correct Decryption Flag captured. Added badge count.
+                  </div>
+                  <button 
+                    onClick={() => {
+                      sound.playEnter();
+                      const txt = `I decrypted the teaser cipher on Null Origin CTF! Can you crack it too? Try the ROT13 challenge here: https://nullorigin.cyberhx.com ✨🔓 #CTF #Hacking`;
+                      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`, "_blank");
+                    }}
+                    className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-emerald-900/10 hover:bg-emerald-900/25 border border-emerald-600/30 text-emerald-400 rounded text-[9.5px] font-black tracking-widest cursor-pointer transition-all active:scale-95"
+                  >
+                    <Share2 className="h-3 w-3 text-emerald-400 animate-bounce" />
+                    <span>BRAG ON TWITTER / X</span>
+                  </button>
+                </div>
+              )}
+              {teaserStatus === "incorrect" && (
+                <div className="text-[10px] text-red-500 font-bold uppercase leading-none bg-red-950/30 border border-red-900/60 p-2 rounded">
+                  ✗ INCORRECT. Standard Caesar rotation. Try ROT-13 decryption.
+                </div>
+              )}
+            </div>
 
           </div>
 
