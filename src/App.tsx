@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import HackerBackground from "./components/HackerBackground";
 import HackerMask from "./components/HackerMask";
+import RegistrationPage from "./components/RegistrationPage";
 import { sound } from "./utils/audio";
 import { 
   Volume2, 
@@ -32,14 +34,14 @@ interface Cadet {
   timestamp: string;
 }
 
-export default function App() {
+function HomePage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [codename, setCodename] = useState("");
   const [preRegistered, setPreRegistered] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [copiedLink, setCopiedLink] = useState(false);
   
-  // Custom Live Countdown to a mock near-future date
   const [timeLeft, setTimeLeft] = useState({
     days: "24",
     hours: "08",
@@ -47,11 +49,9 @@ export default function App() {
     seconds: "12",
   });
 
-  // Teaser Challenge State
   const [teaserInput, setTeaserInput] = useState("");
   const [teaserStatus, setTeaserStatus] = useState<"idle" | "correct" | "incorrect">("idle");
 
-  // Retro Console Logs
   const [logs, setLogs] = useState<string[]>([
     "INITIALIZING SECURE SOCKET SHELL v4.8...",
     "ESTABLISHING VPN TUNNEL FOR INGRESS...",
@@ -59,13 +59,11 @@ export default function App() {
     "STATUS: LISTENING ON DECRYPT PORTS",
   ]);
 
-  // Production Interactive States
   const [registrations, setRegistrations] = useState<Cadet[]>([]);
   const [statusClicks, setStatusClicks] = useState(0);
   const [showAdmin, setShowAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState<"database" | "guide">("database");
 
-  // Audio initialize or key feedback
   const handleKeyInteraction = () => {
     sound.playKey();
   };
@@ -76,9 +74,7 @@ export default function App() {
     sound.playClick();
   };
 
-  // Live Timer Effect
   useEffect(() => {
-    // Set fixed target launch date: 24 days, 8 hours, 47 minutes from now roughly, or just count down sequentially.
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + 24);
     targetDate.setHours(targetDate.getHours() + 8);
@@ -108,9 +104,7 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Live Database Roster & State Initialization
   useEffect(() => {
-    // Load registered status for this user
     const saved = localStorage.getItem("null_origin_ctf_preregistered");
     if (saved === "true") {
       setPreRegistered(true);
@@ -120,16 +114,12 @@ export default function App() {
       setCodename(savedCname);
     }
 
-    // Load entire roster from local storage
     const stored = localStorage.getItem("null_origin_ctf_roster");
     if (stored) {
       try {
         setRegistrations(JSON.parse(stored));
-      } catch (e) {
-        // Fallback
-      }
+      } catch (e) {}
     } else {
-      // Seed initial mock cyber agency operators to show rich live records
       const initialRoster: Cadet[] = [
         { email: "neo@cyberhx.com", codename: "NE0_BYPASS", solved: true, timestamp: new Date(Date.now() - 3600000 * 3).toISOString() },
         { email: "trinity@cipher.org", codename: "TR1N1TY", solved: true, timestamp: new Date(Date.now() - 3600000 * 11).toISOString() },
@@ -141,7 +131,6 @@ export default function App() {
     }
   }, []);
 
-  // Ambient log updates
   useEffect(() => {
     const terminalFeeds = [
       "INGRESS FILTER: Bypassing regional proxy buffers...",
@@ -158,9 +147,7 @@ export default function App() {
       const randomFeed = terminalFeeds[Math.floor(Math.random() * terminalFeeds.length)];
       setLogs((prev) => {
         const next = [...prev, `[${new Date().toLocaleTimeString()}] ${randomFeed}`];
-        if (next.length > 5) {
-          next.shift();
-        }
+        if (next.length > 5) next.shift();
         return next;
       });
     }, 6000);
@@ -168,7 +155,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Handle registration submission with live roster sync
   const handlePreRegister = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
@@ -178,12 +164,10 @@ export default function App() {
     setCodename(finalCodename);
     setPreRegistered(true);
 
-    // Save locally for owner session state
     localStorage.setItem("null_origin_ctf_preregistered", "true");
     localStorage.setItem("null_origin_ctf_email", email);
     localStorage.setItem("null_origin_ctf_codename", finalCodename);
 
-    // Save into central registration list
     const newCadet: Cadet = {
       email: email.trim(),
       codename: finalCodename,
@@ -195,19 +179,16 @@ export default function App() {
     setRegistrations(updatedRoster);
     localStorage.setItem("null_origin_ctf_roster", JSON.stringify(updatedRoster));
 
-    // Append beautiful log
     setLogs((prev) => [
       ...prev,
       `[REGISTRANT] Added '${finalCodename}' into Null Origin queue. Checksum active.`,
     ]);
   };
 
-  // Teaser solver with live update to cadet state
   const handleTeaserVerify = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanInput = teaserInput.trim().toLowerCase();
     
-    // Check if user submitted correct decrypted flag: flag{nH11_rot13_d3c0d3} or elements of it
     if (cleanInput.includes("flag{nh11_rot13_d3c0d3}") || cleanInput === "flag{nh11_rot13_d3c0d3}") {
       setTeaserStatus("correct");
       sound.playSuccess();
@@ -216,7 +197,6 @@ export default function App() {
         `[TEASER SOLVED] Flag decrypted successfully! Decrypted message verified.`,
       ]);
 
-      // If user is already pre-registered, mark them as "solved: true" in database roster list as well
       const currentEmail = localStorage.getItem("null_origin_ctf_email");
       if (currentEmail) {
         const updatedRoster = registrations.map(r => {
@@ -235,7 +215,6 @@ export default function App() {
     }
   };
 
-  // Status indicator clicks trigger hidden Overseer Panel
   const handleStatusClick = () => {
     sound.playClick();
     setStatusClicks((prev) => {
@@ -253,10 +232,8 @@ export default function App() {
     });
   };
 
-  // Export Roster list to CSV format for marketing deployment
   const downloadCSV = () => {
     sound.playEnter();
-    // Headers matching professional standards
     const headers = "Email,Codename,Teaser Decrypted,Registration Dated\n";
     const body = registrations.map(r => 
       `"${r.email.replace(/"/g, '""')}","${r.codename.replace(/"/g, '""')}","${r.solved ? 'YES' : 'NO'}","${r.timestamp}"`
@@ -272,7 +249,6 @@ export default function App() {
     document.body.removeChild(link);
   };
 
-  // Purge entire developer session database
   const clearDatabase = () => {
     if (window.confirm("Are you sure you want to purge the local registries roster? This will reset mockup entries to defaults.")) {
       sound.playError();
@@ -285,7 +261,6 @@ export default function App() {
     }
   };
 
-  // Viral marketing share intents
   const shareOnTwitter = () => {
     sound.playEnter();
     const message = `I have secured my operator clearance code & codename "${codename || 'Anonym'}" for Null Origin CTF early access. Pre-registrations are live right now! Try to crack the teaser cipher if you dare. 💻🔓\n\nReserve portal here: https://nullorigin.cyberhx.com`;
@@ -310,13 +285,11 @@ export default function App() {
       className="min-h-screen bg-[#020202] text-gray-100 font-mono flex flex-col relative overflow-x-hidden selection:bg-red-500 selection:text-black"
       onKeyDown={handleKeyInteraction}
     >
-      {/* Dynamic Cyber Matrix and Grid Background */}
       <HackerBackground />
 
-      {/* Floating Header Actions */}
+      {/* Header */}
       <header className="relative z-20 w-full px-6 py-4 flex justify-between items-center bg-black/85 backdrop-blur-md border-b border-red-600/30 transition-all duration-300">
         <div className="flex items-center space-x-4">
-          {/* Logo rendered natively without boxes or boundaries - tries /mask.png then /logo.png */}
           <img 
             src="/mask.png" 
             alt="Null Origin Icon" 
@@ -344,13 +317,12 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           {/* Sound Control */}
           <button
             onClick={toggleSound}
             onMouseEnter={() => sound.playHover()}
-            id="sound-toggle-btn"
-            className="p-2.5 border border-red-950/60 rounded bg-red-950/10 hover:bg-red-900/20 active:bg-red-900/40 hover:border-red-600/50 transition-all text-zinc-400 hover:text-red-400 cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.05)]"
+            className="p-2.5 border border-red-950/60 rounded bg-red-950/10 hover:bg-red-900/20 active:bg-red-900/40 hover:border-red-600/50 transition-all text-zinc-400 hover:text-red-400 cursor-pointer"
             title={audioEnabled ? "Mute cyber synth sounds" : "Unmute cyber synth sounds"}
           >
             {audioEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
@@ -360,35 +332,39 @@ export default function App() {
           <button
             onClick={copyShareLink}
             onMouseEnter={() => sound.playHover()}
-            id="share-btn"
-            className="flex items-center space-x-2 px-4.5 py-2 border border-red-950/60 rounded bg-red-950/15 hover:text-red-400 text-zinc-400 hover:bg-red-900/25 active:bg-red-900/45 hover:border-red-600/50 transition-all text-xs font-black tracking-widest"
+            className="flex items-center space-x-2 px-4 py-2 border border-red-950/60 rounded bg-red-950/15 hover:text-red-400 text-zinc-400 hover:bg-red-900/25 hover:border-red-600/50 transition-all text-xs font-black tracking-widest"
           >
             <Share2 className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{copiedLink ? "COPIED" : "SHARE LINK"}</span>
           </button>
+
+          {/* REGISTER NOW button */}
+          <button
+            onClick={() => navigate("/registration")}
+            onMouseEnter={() => sound.playHover()}
+            className="flex items-center space-x-2 px-4 py-2 bg-red-700 hover:bg-red-600 border border-red-500 text-white text-xs font-black tracking-widest uppercase rounded transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+          >
+            <ArrowRight className="h-3.5 w-3.5" />
+            <span>REGISTER NOW</span>
+          </button>
         </div>
       </header>
 
-      {/* Main Terminal Shell container */}
+      {/* Main */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col justify-center relative z-10">
         
-        {/* Terminal Header Info Prompt */}
         <div className="mb-4 text-xs md:text-sm text-zinc-500 select-none flex items-center space-x-2">
           <span className="text-red-500 font-bold">operator@nullorigin:~$</span>
           <span className="text-[#22c55e] font-semibold pl-1">./initialize_portal --domain=nullorigin.cyberhx.com</span>
           <span className="h-4 w-1.5 bg-red-600 inline-block animate-pulse"></span>
         </div>
 
-        {/* Content Section: Flex grid to align with screen layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
           
-          {/* Left Hand: Hero Typography, CTF Box, Status, Register */}
+          {/* Left */}
           <div className="lg:col-span-7 flex flex-col items-start text-left justify-center space-y-8">
             
-            {/* Main branding & logo matching the original picture style */}
             <div className="w-full relative space-y-4">
-              
-              {/* Logo from /public/logo.png rendered as the primary large header */}
               <div 
                 className="flex items-center justify-start mb-2 max-w-md md:max-w-xl"
                 onMouseEnter={() => sound.playHover()}
@@ -398,14 +374,12 @@ export default function App() {
                   alt="Null Origin Logo" 
                   referrerPolicy="no-referrer"
                   onError={(e) => {
-                    // Fallback text if the image fails to load
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                   className="max-h-[380px] md:max-h-[500px] w-full object-contain filter drop-shadow-[0_0_45px_rgba(239,68,68,0.75)] transition-all hover:scale-105 duration-500 cursor-crosshair"
                 />
               </div>
 
-              {/* COMING SOON typewriter style matches precisely */}
               <div 
                 className="pt-2 text-md md:text-xl font-bold tracking-widest text-[#22c55e] flex items-center space-x-2 select-none"
                 onMouseEnter={() => sound.playHover()}
@@ -415,7 +389,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Live CountDown T-Minus Digital Module */}
+            {/* Countdown */}
             <div 
               onMouseEnter={() => sound.playHover()}
               className="w-full max-w-md bg-zinc-950/90 border border-zinc-900 rounded p-4 shadow-2xl relative overflow-hidden group hover:border-[#22c55e]/40 transition-all duration-300"
@@ -434,41 +408,33 @@ export default function App() {
               </div>
 
               <div className="grid grid-cols-4 gap-2 text-center">
-                <div className="bg-[#050505] border border-zinc-900 group-hover:border-zinc-850 p-2 rounded">
-                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]" style={{ fontStyle: "normal" }}>
-                    {timeLeft.days}
-                  </p>
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">{timeLeft.days}</p>
                   <span className="text-[8px] tracking-wider text-zinc-500 uppercase">DAYS</span>
                 </div>
-                <div className="bg-[#050505] border border-zinc-900 group-hover:border-zinc-850 p-2 rounded">
-                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">
-                    {timeLeft.hours}
-                  </p>
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">{timeLeft.hours}</p>
                   <span className="text-[8px] tracking-wider text-zinc-500 uppercase">HRS</span>
                 </div>
-                <div className="bg-[#050505] border border-zinc-900 group-hover:border-zinc-850 p-2 rounded">
-                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">
-                    {timeLeft.minutes}
-                  </p>
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-[#22c55e]">{timeLeft.minutes}</p>
                   <span className="text-[8px] tracking-wider text-zinc-500 uppercase">MINS</span>
                 </div>
-                <div className="bg-[#050505] border border-zinc-900 group-hover:border-zinc-850 p-2 rounded">
-                  <p className="text-2xl md:text-3xl font-extrabold text-red-600 animate-pulse">
-                    {timeLeft.seconds}
-                  </p>
+                <div className="bg-[#050505] border border-zinc-900 p-2 rounded">
+                  <p className="text-2xl md:text-3xl font-extrabold text-red-600 animate-pulse">{timeLeft.seconds}</p>
                   <span className="text-[8px] tracking-wider text-zinc-500 uppercase">SECS</span>
                 </div>
               </div>
             </div>
 
-            {/* Operator Signup panel */}
+            {/* Pre-reg form */}
             <div className="w-full max-w-lg bg-[#06060c]/85 border border-zinc-900 hover:border-red-900/30 transition-colors rounded p-6 shadow-2xl relative">
               <div className="absolute top-0 right-0 px-2.5 py-0.5 bg-red-700 text-black text-[9px] font-black uppercase tracking-widest animate-pulse">
                 Pre-Reg Active
               </div>
 
               {preRegistered ? (
-                <div id="signup-success" className="space-y-4 animate-[fadeIn_1s] py-2">
+                <div className="space-y-4 animate-[fadeIn_1s] py-2">
                   <div className="flex items-center space-x-3 text-emerald-400">
                     <ShieldCheck className="h-8 w-8 shrink-0" />
                     <div>
@@ -484,7 +450,6 @@ export default function App() {
                     </p>
                   </div>
 
-                  {/* Viral Social Share loop */}
                   <div className="pt-2 space-y-2">
                     <p className="text-[10px] text-zinc-500 tracking-wider">RECRUIT CO-OPERATORS TO FORM COMPROMISE SQUAD:</p>
                     <div className="flex flex-wrap gap-2">
@@ -508,10 +473,7 @@ export default function App() {
                   </div>
 
                   <button
-                    onClick={() => {
-                      setPreRegistered(false);
-                      setEmail("");
-                    }}
+                    onClick={() => { setPreRegistered(false); setEmail(""); }}
                     onMouseEnter={() => sound.playHover()}
                     className="text-xs text-zinc-400 underline hover:text-white transition-all cursor-pointer block pt-1"
                   >
@@ -519,7 +481,7 @@ export default function App() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handlePreRegister} id="prereg-form" className="space-y-4">
+                <form onSubmit={handlePreRegister} className="space-y-4">
                   <div className="space-y-2">
                     <h3 className="text-xs font-bold tracking-widest text-[#22c55e] uppercase flex items-center">
                       <Terminal className="h-3 w-3 text-red-500 mr-1 animate-pulse" />
@@ -536,35 +498,24 @@ export default function App() {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="relative">
-                      <input
-                        type="email"
-                        required
-                        value={email}
-                        onMouseEnter={() => sound.playHover()}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          handleKeyInteraction();
-                        }}
-                        placeholder="OPERATOR_EMAIL (e.g. cadet@domain.com)"
-                        className="w-full bg-black/95 border border-zinc-850 hover:border-zinc-700 focus:border-red-600 focus:outline-none rounded px-3.5 py-2.5 text-xs md:text-sm tracking-wider text-emerald-400 placeholder-zinc-800 uppercase focus:ring-1 focus:ring-red-600/30 transition-all font-mono"
-                      />
-                    </div>
-
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={codename}
-                        onMouseEnter={() => sound.playHover()}
-                        onChange={(e) => {
-                          setCodename(e.target.value);
-                          handleKeyInteraction();
-                        }}
-                        placeholder="DESIRED_CODENAME (OPTIONAL)"
-                        maxLength={24}
-                        className="w-full bg-black/95 border border-zinc-850 hover:border-zinc-700 focus:border-[#22c55e] focus:outline-none rounded px-3.5 py-2.5 text-xs md:text-sm tracking-wider text-[#22c55e] placeholder-zinc-800 uppercase focus:ring-1 focus:ring-[#22c55e]/30 transition-all font-mono"
-                      />
-                    </div>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onMouseEnter={() => sound.playHover()}
+                      onChange={(e) => { setEmail(e.target.value); handleKeyInteraction(); }}
+                      placeholder="OPERATOR_EMAIL (e.g. cadet@domain.com)"
+                      className="w-full bg-black/95 border border-zinc-850 hover:border-zinc-700 focus:border-red-600 focus:outline-none rounded px-3.5 py-2.5 text-xs md:text-sm tracking-wider text-emerald-400 placeholder-zinc-800 uppercase focus:ring-1 focus:ring-red-600/30 transition-all font-mono"
+                    />
+                    <input
+                      type="text"
+                      value={codename}
+                      onMouseEnter={() => sound.playHover()}
+                      onChange={(e) => { setCodename(e.target.value); handleKeyInteraction(); }}
+                      placeholder="DESIRED_CODENAME (OPTIONAL)"
+                      maxLength={24}
+                      className="w-full bg-black/95 border border-zinc-850 hover:border-zinc-700 focus:border-[#22c55e] focus:outline-none rounded px-3.5 py-2.5 text-xs md:text-sm tracking-wider text-[#22c55e] placeholder-zinc-800 uppercase focus:ring-1 focus:ring-[#22c55e]/30 transition-all font-mono"
+                    />
                   </div>
 
                   <button
@@ -575,16 +526,25 @@ export default function App() {
                     <span>INITIALIZE SECURITY INGRESS</span>
                     <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                   </button>
+
+                  {/* CTA to full registration */}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/registration")}
+                    onMouseEnter={() => sound.playHover()}
+                    className="w-full flex items-center justify-center space-x-2 bg-zinc-900/60 border border-zinc-700 hover:border-red-600/50 hover:text-red-400 text-zinc-400 font-bold tracking-widest px-4 py-2.5 rounded text-xs transition-all uppercase group cursor-pointer"
+                  >
+                    <span>TEAM REGISTRATION →</span>
+                  </button>
                 </form>
               )}
             </div>
 
           </div>
 
-          {/* Right Hand: Hacker Mask artwork from the user's screenshot & Easter egg */}
+          {/* Right */}
           <div className="lg:col-span-5 flex flex-col justify-center items-center py-4 relative">
             
-            {/* The Anonymous Hacker Mask Container */}
             <div 
               className="relative w-full flex justify-center"
               onMouseEnter={() => sound.playHover()}
@@ -592,9 +552,8 @@ export default function App() {
               <HackerMask />
             </div>
 
-            {/* Miniature ROT13 Cipher teaser box - keeps user engaged in theme */}
+            {/* Teaser box */}
             <div 
-              id="decrypt-challenge-box" 
               className="w-full max-w-sm bg-black/95 border border-zinc-900 rounded p-4 shadow-xl mt-4 space-y-3 hover:border-red-900/30 transition-all duration-300"
               onMouseEnter={() => sound.playHover()}
             >
@@ -622,23 +581,20 @@ export default function App() {
                   placeholder="FLAG{...}"
                   value={teaserInput}
                   onMouseEnter={() => sound.playHover()}
-                  onChange={(e) => {
-                    setTeaserInput(e.target.value);
-                    handleKeyInteraction();
-                  }}
+                  onChange={(e) => { setTeaserInput(e.target.value); handleKeyInteraction(); }}
                   className="bg-black border border-zinc-850 hover:border-zinc-700 text-xs text-white rounded px-3 py-2 flex-1 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600/30 transition-all font-mono uppercase"
                 />
                 <button
                   type="submit"
                   onMouseEnter={() => sound.playHover()}
-                  className="bg-red-955 border border-red-900 hover:border-red-600 text-[10px] tracking-wider uppercase font-bold text-red-200 hover:text-white px-4 py-2 rounded transition-all cursor-pointer shadow-[0_0_10px_rgba(239,68,68,0.1)]"
+                  className="bg-red-955 border border-red-900 hover:border-red-600 text-[10px] tracking-wider uppercase font-bold text-red-200 hover:text-white px-4 py-2 rounded transition-all cursor-pointer"
                 >
                   VERIFY
                 </button>
               </form>
 
               {teaserStatus === "correct" && (
-                <div className="animate-[slideIn_0.3s] space-y-2 bg-emerald-950/20 border border-emerald-900/60 p-3 rounded">
+                <div className="space-y-2 bg-emerald-950/20 border border-emerald-900/60 p-3 rounded">
                   <div className="text-[10px] text-emerald-400 font-bold uppercase animate-pulse leading-none">
                     ✓ ACCEPTED! Correct Decryption Flag captured. Added badge count.
                   </div>
@@ -656,7 +612,7 @@ export default function App() {
                 </div>
               )}
               {teaserStatus === "incorrect" && (
-                <div className="text-[10px] text-red-500 font-bold uppercase animate-shake leading-none bg-red-950/30 border border-red-900/60 p-2 rounded">
+                <div className="text-[10px] text-red-500 font-bold uppercase leading-none bg-red-950/30 border border-red-900/60 p-2 rounded">
                   ✗ INCORRECT. Standard Caesar rotation. Try ROT-13 decryption.
                 </div>
               )}
@@ -666,24 +622,17 @@ export default function App() {
 
         </div>
 
-        {/* Ambient terminal-level footer logs list */}
+        {/* Logs */}
         <div className="mt-8 border-t border-zinc-900 pt-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              <span className="text-[9px] tracking-widest text-zinc-500 uppercase font-bold">
-                AMBIENT_LOGS_STREAM
-              </span>
+              <span className="text-[9px] tracking-widest text-zinc-500 uppercase font-bold">AMBIENT_LOGS_STREAM</span>
             </div>
-            <span className="text-[9px] text-zinc-700 uppercase font-mono">
-              CHANNEL PORTAL ACTIVE // SECURE CONTEXT
-            </span>
+            <span className="text-[9px] text-zinc-700 uppercase font-mono">CHANNEL PORTAL ACTIVE // SECURE CONTEXT</span>
           </div>
 
-          <div 
-            id="live-logs-feed" 
-            className="bg-[#040406] border border-zinc-900 rounded p-3 h-24 overflow-y-auto font-mono text-[9px] md:text-[10px] text-zinc-500 space-y-1 scrollbar-thin select-none"
-          >
+          <div className="bg-[#040406] border border-zinc-900 rounded p-3 h-24 overflow-y-auto font-mono text-[9px] md:text-[10px] text-zinc-500 space-y-1 scrollbar-thin select-none">
             {logs.map((log, index) => (
               <div key={index} className="flex space-x-2 border-l border-zinc-800 pl-2">
                 <span className="text-red-900 shrink-0">&raquo;</span>
@@ -693,13 +642,9 @@ export default function App() {
           </div>
         </div>
 
-        {/* Hidden Overseer Tactical Terminal */}
+        {/* Admin Panel */}
         {showAdmin && (
-          <div 
-            id="overseer-dashboard-panel"
-            className="mt-8 bg-zinc-950/98 border border-[#22c55e]/50 rounded-lg p-5 shadow-[0_0_35px_rgba(34,197,94,0.15)] relative overflow-hidden animate-[fadeIn_0.5s]"
-          >
-            {/* Ambient indicator lights */}
+          <div className="mt-8 bg-zinc-950/98 border border-[#22c55e]/50 rounded-lg p-5 shadow-[0_0_35px_rgba(34,197,94,0.15)] relative overflow-hidden animate-[fadeIn_0.5s]">
             <div className="absolute top-0 right-0 py-1.5 px-4 bg-[#22c55e]/10 text-[#22c55e] text-[9.5px] font-black uppercase tracking-widest border-l border-b border-[#22c55e]/30 select-none animate-pulse">
               OPERATOR COMMAND ROOM ACTIVE
             </div>
@@ -711,7 +656,6 @@ export default function App() {
               </h2>
             </div>
 
-            {/* Dashboard Navigation Tabs */}
             <div className="flex space-x-2 border-b border-zinc-900 pb-2.5 mb-4 text-xs">
               <button
                 onClick={() => { sound.playClick(); setActiveTab("database"); }}
@@ -745,7 +689,7 @@ export default function App() {
               <div className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
                   <p className="text-zinc-400 max-w-xl font-sans">
-                    These are the live registrations collected from this browser. When you deploy to production, these represent the official CTF queue signups, ready to be exported.
+                    These are the live registrations collected from this browser.
                   </p>
                   <div className="flex space-x-2">
                     <button
@@ -757,7 +701,7 @@ export default function App() {
                     </button>
                     <button
                       onClick={clearDatabase}
-                      className="flex items-center space-x-1.5 px-3 py-2 bg-red-955 hover:bg-red-900/30 border border-red-900/60 text-red-400 font-bold rounded cursor-pointer transition-all active:scale-95"
+                      className="flex items-center space-x-1.5 px-3 py-2 hover:bg-red-900/30 border border-red-900/60 text-red-400 font-bold rounded cursor-pointer transition-all active:scale-95"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       <span>CLEAR ALL RECORDS</span>
@@ -765,16 +709,15 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Database Table layout */}
                 <div className="border border-zinc-900 rounded overflow-hidden">
                   <table className="w-full text-left text-[11px] md:text-xs">
                     <thead>
                       <tr className="bg-[#050505] border-b border-zinc-900 text-zinc-500 uppercase tracking-widest font-bold">
-                        <th className="p-3">Rank/Index</th>
+                        <th className="p-3">Rank</th>
                         <th className="p-3">Codename</th>
-                        <th className="p-3">Email Address</th>
-                        <th className="p-3 text-center">Teaser Status</th>
-                        <th className="p-3 text-right">Registration Date</th>
+                        <th className="p-3">Email</th>
+                        <th className="p-3 text-center">Teaser</th>
+                        <th className="p-3 text-right">Date</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-900 font-mono text-zinc-300">
@@ -785,13 +728,9 @@ export default function App() {
                           <td className="p-3 text-zinc-400 font-sans select-all">{cadet.email}</td>
                           <td className="p-3 text-center">
                             {cadet.solved ? (
-                              <span className="px-2 py-0.5 bg-emerald-950/50 border border-emerald-900 text-emerald-400 rounded-full text-[9px] font-black uppercase tracking-wider">
-                                ✓ Decrypted
-                              </span>
+                              <span className="px-2 py-0.5 bg-emerald-950/50 border border-emerald-900 text-emerald-400 rounded-full text-[9px] font-black uppercase tracking-wider">✓ Decrypted</span>
                             ) : (
-                              <span className="px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-500 rounded-full text-[9px] uppercase tracking-wider">
-                                No Attempt
-                              </span>
+                              <span className="px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-500 rounded-full text-[9px] uppercase tracking-wider">No Attempt</span>
                             )}
                           </td>
                           <td className="p-3 text-right text-zinc-500 text-[10px]">
@@ -805,44 +744,13 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-4 text-xs font-sans text-zinc-300 leading-relaxed max-w-4xl">
-                <div className="space-y-1.5">
-                  <h3 className="font-bold text-sm text-[#22c55e] font-mono uppercase">
-                    HOW TO LAUNCH THIS PORTAL ON A REAL DOMAIN (PRODUCTION):
-                  </h3>
-                  <p className="text-zinc-400">
-                    This teaser allows you to collect registrations and building hype for <span className="text-red-500 font-mono font-bold">nullorigin.cyberhx.com</span>. Since databases cannot be built on static client-side setups without API keys, here is how you can use this in production:
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                  <div className="bg-[#050505] p-3 rounded border border-zinc-900">
-                    <h4 className="font-bold text-zinc-100 font-mono mb-1.5 uppercase flex items-center text-[#22c55e]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] mr-1.5 animate-pulse"></span>
-                      METHOD 1: EXPORT AND LAUNCH (EASY)
-                    </h4>
-                    <p className="text-zinc-400 text-[11px] leading-relaxed">
-                      Simply launch this page as-is today! The data is safely saved in each user's browser. When someone tells you they have pre-registered, you can ask them to share their local storage or export themselves, or you can download the consolidated roster CSV anytime you open the portal.
-                    </p>
-                  </div>
-
-                  <div className="bg-[#050505] p-3 rounded border border-zinc-900">
-                    <h4 className="font-bold text-zinc-100 font-mono mb-1.5 uppercase flex items-center text-red-500">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 animate-pulse"></span>
-                      METHOD 2: CONNECT CLOUD DATABASE (RECOMMENDED)
-                    </h4>
-                    <p className="text-zinc-400 text-[11px] leading-relaxed">
-                      If you want live real-time cloud data storage, we can trigger the <strong className="text-[#22c55e]">set_up_firebase</strong> tool in my next step! This will instantly connect a free Google Firestore database. I will then bind your register submit directly so cadets are synced onto the live cloud on real-time database servers!
-                    </p>
-                  </div>
-                </div>
-
                 <div className="bg-red-950/15 border border-red-900/40 p-4 rounded text-xs text-red-300 font-mono">
                   <p className="font-bold uppercase text-[11px] mb-1 text-red-400 flex items-center">
                     <ShieldCheck className="h-4 w-4 mr-1.5 text-red-400 animate-pulse" />
                     PRODUCTION STATUS: PORTAL IS READY FOR HOSTING!
                   </p>
                   <p className="text-[11px] leading-relaxed">
-                    All components are bundled, fully responsive (with secured mobile layout signatures), highly optimized to reduce file sizes, and styled directly using compiled Tailwind utilities.
+                    All components are bundled, fully responsive, and styled directly using compiled Tailwind utilities.
                   </p>
                 </div>
               </div>
@@ -852,9 +760,8 @@ export default function App() {
 
       </main>
 
-      {/* Humble Footer containing licensing */}
+      {/* Footer */}
       <footer className="relative z-10 w-full text-center py-8 bg-black/95 border-t border-zinc-950 mt-auto flex flex-col items-center justify-center space-y-4">
-        {/* Large Footer Logo rendered natively without frames - tries /mask.png then /logo.png */}
         <img 
           src="/mask.png" 
           alt="Null Origin logo small" 
@@ -874,5 +781,14 @@ export default function App() {
         </p>
       </footer>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/registration" element={<RegistrationPage onBack={() => window.location.href = "/"} />} />
+      <Route path="/*" element={<HomePage />} />
+    </Routes>
   );
 }
