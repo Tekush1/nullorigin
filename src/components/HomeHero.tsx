@@ -1,5 +1,5 @@
 import { Calendar, Terminal, Users, CheckCircle, ArrowRight } from "lucide-react";
-import { sound } from "../utils/audio";
+import { sound } from "../hooks/utils/audio";
 
 interface TimeLeft {
   days: string;

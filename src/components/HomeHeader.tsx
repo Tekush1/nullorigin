@@ -1,6 +1,6 @@
 import { Volume2, VolumeX, Share2, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { sound } from "../../utils/audio";
+import { sound } from "../hooks/utils/audio";
 
 interface HomeHeaderProps {
   audioEnabled: boolean;

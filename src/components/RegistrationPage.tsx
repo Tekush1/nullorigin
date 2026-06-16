@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { sound } from "../utils/audio";
+import { sound } from "../hooks/utils/audio";
 import {
   ArrowRight,
   ShieldCheck,

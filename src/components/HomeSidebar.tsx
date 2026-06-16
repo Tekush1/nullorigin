@@ -1,12 +1,13 @@
+import { FormEvent } from "react";
 import { Cpu, Share2, CheckCircle } from "lucide-react";
 import HackerMask from "./HackerMask";
-import { sound } from "../utils/audio";
+import { sound } from "../hooks/utils/audio";
 
 interface HomeSidebarProps {
   teaserInput: string;
   teaserStatus: "idle" | "correct" | "incorrect";
   setTeaserInput: (value: string) => void;
-  handleTeaserVerify: (e: React.FormEvent) => void;
+  handleTeaserVerify: (e: FormEvent) => void;
   handleKeyInteraction: () => void;
 }
 

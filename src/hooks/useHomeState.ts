@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { sound } from "../../utils/audio";
+import { useState, useEffect, FormEvent } from "react";
+import { sound } from "./utils/audio";
 
 export interface Cadet {
   email: string;
@@ -106,7 +106,7 @@ export function useHomeState() {
     sound.playClick();
   };
 
-  const handleTeaserVerify = (e: React.FormEvent) => {
+  const handleTeaserVerify = (e: FormEvent) => {
     e.preventDefault();
     const cleanInput = teaserInput.trim().toLowerCase();
     if (cleanInput.includes("flag{nh11_rot13_d3c0d3}") || cleanInput === "flag{nh11_rot13_d3c0d3}") {

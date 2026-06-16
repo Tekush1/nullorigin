@@ -10,9 +10,7 @@ class SoundSynth {
           if (this.ctx && this.ctx.state === "suspended") {
             this.ctx.resume();
           }
-        } catch (e) {
-          // Ignored
-        }
+        } catch (e) {}
         window.removeEventListener("click", unlock);
         window.removeEventListener("keydown", unlock);
         window.removeEventListener("touchstart", unlock);
@@ -48,25 +46,18 @@ class SoundSynth {
     try {
       this.initCtx();
       if (!this.ctx) return;
-
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
       osc.type = "sine";
       const pitch = 800 + Math.random() * 200;
       osc.frequency.setValueAtTime(pitch, this.ctx.currentTime);
-
       gain.gain.setValueAtTime(0.015, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.00001, this.ctx.currentTime + 0.05);
-
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-
       osc.start();
       osc.stop(this.ctx.currentTime + 0.05);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
 
   playEnter() {
@@ -74,25 +65,18 @@ class SoundSynth {
     try {
       this.initCtx();
       if (!this.ctx) return;
-
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
       osc.type = "square";
       osc.frequency.setValueAtTime(440, this.ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(660, this.ctx.currentTime + 0.1);
-
       gain.gain.setValueAtTime(0.02, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.00001, this.ctx.currentTime + 0.12);
-
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-
       osc.start();
       osc.stop(this.ctx.currentTime + 0.12);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
 
   playSuccess() {
@@ -100,33 +84,25 @@ class SoundSynth {
     try {
       this.initCtx();
       if (!this.ctx) return;
-
       const osc1 = this.ctx.createOscillator();
       const osc2 = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
-      osc1.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
-      osc1.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.1); // E5
-      osc1.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.2); // G5
-
-      osc2.frequency.setValueAtTime(261.63, this.ctx.currentTime); // C4
-      osc2.frequency.setValueAtTime(329.63, this.ctx.currentTime + 0.1); // E4
-      osc2.frequency.setValueAtTime(392.00, this.ctx.currentTime + 0.2); // G4
-
+      osc1.frequency.setValueAtTime(523.25, this.ctx.currentTime);
+      osc1.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.1);
+      osc1.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.2);
+      osc2.frequency.setValueAtTime(261.63, this.ctx.currentTime);
+      osc2.frequency.setValueAtTime(329.63, this.ctx.currentTime + 0.1);
+      osc2.frequency.setValueAtTime(392.00, this.ctx.currentTime + 0.2);
       gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.00001, this.ctx.currentTime + 0.4);
-
       osc1.connect(gain);
       osc2.connect(gain);
       gain.connect(this.ctx.destination);
-
       osc1.start();
       osc2.start();
       osc1.stop(this.ctx.currentTime + 0.4);
       osc2.stop(this.ctx.currentTime + 0.4);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
 
   playError() {
@@ -134,25 +110,18 @@ class SoundSynth {
     try {
       this.initCtx();
       if (!this.ctx) return;
-
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
       osc.type = "sawtooth";
       osc.frequency.setValueAtTime(150, this.ctx.currentTime);
       osc.frequency.linearRampToValueAtTime(100, this.ctx.currentTime + 0.2);
-
       gain.gain.setValueAtTime(0.03, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.00001, this.ctx.currentTime + 0.25);
-
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-
       osc.start();
       osc.stop(this.ctx.currentTime + 0.25);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
 
   playGlitch() {
@@ -160,26 +129,19 @@ class SoundSynth {
     try {
       this.initCtx();
       if (!this.ctx) return;
-
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
       osc.type = "triangle";
       osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
       osc.frequency.setValueAtTime(100, this.ctx.currentTime + 0.05);
       osc.frequency.setValueAtTime(800, this.ctx.currentTime + 0.1);
-
       gain.gain.setValueAtTime(0.02, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.00001, this.ctx.currentTime + 0.15);
-
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-
       osc.start();
       osc.stop(this.ctx.currentTime + 0.15);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
 
   playClick() {
@@ -187,25 +149,18 @@ class SoundSynth {
     try {
       this.initCtx();
       if (!this.ctx) return;
-
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
       osc.type = "sine";
-      this.ctx.resume(); // Ensure context is running if interactive
+      this.ctx.resume();
       osc.frequency.setValueAtTime(500, this.ctx.currentTime);
-
       gain.gain.setValueAtTime(0.02, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.00001, this.ctx.currentTime + 0.03);
-
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-
       osc.start();
       osc.stop(this.ctx.currentTime + 0.03);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
 
   playHover() {
@@ -213,32 +168,21 @@ class SoundSynth {
     try {
       this.initCtx();
       if (!this.ctx) return;
-
-      // Ensure the audio context is active
       if (this.ctx.state === "suspended") {
         this.ctx.resume();
       }
-
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-
-      // High-tech, clean, highly audible digital micro pip
       osc.type = "sine";
-      const pitch = 1600 + Math.random() * 400; // Super sharp clear micro pip
+      const pitch = 1600 + Math.random() * 400;
       osc.frequency.setValueAtTime(pitch, this.ctx.currentTime);
-
-      // Audible level but short and sleek to keep it fully premium
       gain.gain.setValueAtTime(0.025, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.04);
-
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-
       osc.start();
       osc.stop(this.ctx.currentTime + 0.04);
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
   }
 }
 

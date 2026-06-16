@@ -21,14 +21,20 @@ export default function App() {
       <HackerBackground />
       <HomeHeader
         audioEnabled={state.audioEnabled}
-        toggleSound={state.toggleSound}
-        copyShareLink={state.copyShareLink}
+        onToggleSound={state.toggleSound}
+        onCopyLink={state.copyShareLink}
         copiedLink={state.copiedLink}
-        onRegister={() => setPage("register")}
+        onStatusClick={state.handleStatusClick}
       />
       <main className="relative z-10 flex flex-col lg:flex-row gap-6 px-4 py-8 max-w-7xl mx-auto">
         <HomeHero {...state} onRegister={() => setPage("register")} />
-        <HomeSidebar {...state} onRegister={() => setPage("register")} />
+        <HomeSidebar
+          teaserInput={state.teaserInput}
+          teaserStatus={state.teaserStatus}
+          setTeaserInput={state.setTeaserInput}
+          handleTeaserVerify={state.handleTeaserVerify}
+          handleKeyInteraction={state.handleKeyInteraction}
+        />
       </main>
       <AmbientLogs logs={state.logs} />
       <Footer />
