@@ -66,12 +66,12 @@ export default function Footer() {
           <nav aria-label="Footer quick links">
             <ul className="space-y-2.5">
               {[
-                { label: "Home", href: "/" },
-                { label: "Rules", href: "/rules" },
-                { label: "FAQ", href: "/faq" },
-                { label: "Contact", href: "mailto:contact@cyberhx.com" },
-                { label: "Privacy Policy", href: "/privacy" },
-                { label: "Terms", href: "/terms" },
+                { label: "Home", href: "#" },
+                { label: "Rules", href: "#" },
+                { label: "FAQ", href: "#" },
+                { label: "Contact", href: "#" },
+                { label: "Privacy Policy", href: "#" },
+                { label: "Terms", href: "#" },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a
@@ -95,11 +95,11 @@ export default function Footer() {
           <nav aria-label="Footer community links">
             <ul className="space-y-2.5">
               {[
-                { label: "Discord", href: "https://discord.gg/cyberhx", icon: "⚡" },
-                { label: "LinkedIn", href: "https://linkedin.com/company/cyberhx", icon: "◈" },
-                { label: "Instagram", href: "https://instagram.com/cyberhx", icon: "◉" },
-                { label: "X (Twitter)", href: "https://x.com/cyberhx", icon: "✕" },
-                { label: "GitHub", href: "https://github.com/cyberhx", icon: "◎" },
+                { label: "Discord", href: "#", icon: "⚡" },
+                { label: "LinkedIn", href: "#", icon: "◈" },
+                { label: "Instagram", href: "#", icon: "◉" },
+                { label: "X (Twitter)", href: "#", icon: "✕" },
+                { label: "GitHub", href: "#", icon: "◎" },
               ].map(({ label, href, icon }) => (
                 <li key={label}>
                   <a
