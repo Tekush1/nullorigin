@@ -6,6 +6,7 @@ import AmbientLogs from "./components/AmbientLogs";
 import HackerBackground from "./components/HackerBackground";
 import RegistrationPage from "./components/RegistrationPage";
 import Footer from "./components/Footer";
+import FAQ from "./components/FAQ";
 import { useHomeState } from "./hooks/useHomeState";
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
         />
       </main>
       <AmbientLogs logs={state.logs} />
+      <FAQ />
       <Footer />
     </div>
   );
