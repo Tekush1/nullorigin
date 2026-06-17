@@ -77,17 +77,6 @@ export default function RegistrationPage({ onBack }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (status === "loading") return;
-
-    // Client-side validation
-    if (!form.teamName.trim()) { setErrorMsg("Team name is required."); setStatus("error"); return; }
-    if (!form.country.trim()) { setErrorMsg("Country is required."); setStatus("error"); return; }
-    if (!form.leaderName.trim()) { setErrorMsg("Leader name is required."); setStatus("error"); return; }
-    if (!form.leaderEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.leaderEmail)) {
-      setErrorMsg("A valid leader email is required."); setStatus("error"); return;
-    }
-    if (!form.member1Discord.trim()) { setErrorMsg("Member 1 Discord username is required."); setStatus("error"); return; }
-    if (!form.member1CTFtime.trim()) { setErrorMsg("Member 1 CTFtime profile is required."); setStatus("error"); return; }
-
     setStatus("loading");
     setErrorMsg("");
 
@@ -125,7 +114,7 @@ export default function RegistrationPage({ onBack }: Props) {
 
   // ── shared classes ──
   const inputClass =
-    "w-full bg-[#080810] border border-zinc-800 hover:border-zinc-600 focus:border-red-600 focus:outline-none rounded-md px-3.5 py-2.5 text-[12px] md:text-[13px] tracking-wider text-emerald-400 placeholder-zinc-700 focus:ring-1 focus:ring-red-600/25 transition-all font-mono";
+    "w-full bg-[#080810] border border-zinc-800 hover:border-zinc-600 focus:border-red-600 focus:outline-none rounded-md px-3.5 py-2.5 text-[12px] md:text-[13px] tracking-wider text-emerald-400 placeholder-zinc-700 uppercase focus:ring-1 focus:ring-red-600/25 transition-all font-mono";
   const labelClass =
     "text-[10px] tracking-widest text-zinc-500 uppercase font-bold mb-1.5 flex items-center gap-1.5 select-none";
   const sectionHeadingClass =
@@ -214,7 +203,7 @@ export default function RegistrationPage({ onBack }: Props) {
           </div>
           <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800 rounded-md px-3 py-1.5">
             <Calendar className="h-3 w-3 text-red-400 flex-shrink-0" aria-hidden="true" />
-            <span className="text-[10px] tracking-widest text-zinc-400 font-bold uppercase">Closes 26 Jun 2026</span>
+            <span className="text-[10px] tracking-widest text-zinc-400 font-bold uppercase">Closes 08 July 2025</span>
           </div>
           <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800 rounded-md px-3 py-1.5">
             <Users className="h-3 w-3 text-zinc-400 flex-shrink-0" aria-hidden="true" />
@@ -447,7 +436,7 @@ export default function RegistrationPage({ onBack }: Props) {
                 </button>
 
                 <p className="text-[10px] text-zinc-700 text-center tracking-wider font-sans">
-                  By registering you agree to participate ethically · Null Origin CTF 2026
+                  By registering you agree to participate ethically · Null Origin CTF 2025
                 </p>
               </div>
 
