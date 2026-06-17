@@ -1,4 +1,5 @@
-import { MessageCircle, Calendar, HelpCircle } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, MessageCircle, Calendar, HelpCircle, Shield, Terminal, Code2, Trophy } from "lucide-react";
 
 const DiscordIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
@@ -13,97 +14,264 @@ const WhatsAppIcon = () => (
 );
 
 const FAQS = [
-  { q: "Who can participate?", a: "Anyone! Open to students, professionals, and cybersecurity enthusiasts worldwide. Team size: 1–4 members." },
-  { q: "Is it free to enter?", a: "Yes, Null Origin CTF is completely free to participate in." },
-  { q: "What categories will challenges cover?", a: "Web Security, Cryptography, Reverse Engineering, Digital Forensics, OSINT, Binary Exploitation, and Miscellaneous." },
-  { q: "How long is the CTF?", a: "The qualifiers run for 12 hours online. The final round details will be announced separately." },
-  { q: "When does registration close?", a: "Registration deadline is June 26, 2026 at 12:00 AM IST. Register early to secure your spot!" },
-  { q: "Where do I get support during the event?", a: "Reach out to admin@cyberhx.com or call +91 95694 72058. You can also join our Discord for real-time updates." },
+  { q: "WHAT IS NULL ORIGIN CTF?", a: "Null Origin is a 24-hour online Capture The Flag (CTF) competition where participants solve cybersecurity challenges across Web Security, Cryptography, Forensics, Reverse Engineering, OSINT, Binary Exploitation and Miscellaneous categories." },
+  { q: "WHO CAN PARTICIPATE?", a: "Anyone! Open to students, professionals, and cybersecurity enthusiasts worldwide. Team size: 1–4 members including the team leader." },
+  { q: "IS THIS AN ONLINE EVENT?", a: "Yes, Null Origin CTF is fully online. You can participate from anywhere in the world." },
+  { q: "CAN I PARTICIPATE SOLO?", a: "Yes! You can register and compete solo (team of 1) or form a team of up to 4 members." },
+  { q: "HOW DO I REGISTER?", a: "Click the 'Register Your Team' button on this page or visit the event on Unstop. Registration deadline is June 26, 2026." },
+  { q: "WHAT CATEGORIES WILL BE INCLUDED?", a: "Web Security, Cryptography, Reverse Engineering, Digital Forensics, OSINT, Binary Exploitation, and Miscellaneous Challenges." },
+  { q: "ARE THERE ANY PRIZES?", a: "Prize details will be announced soon. Stay connected on Discord and WhatsApp for updates." },
+  { q: "WILL PARTICIPANTS RECEIVE CERTIFICATES?", a: "Yes! All participants will receive participation certificates. Top performers will receive special achievement certificates." },
 ];
 
 const TIMELINE = [
-  { date: "Now", label: "Registrations Open", done: true },
-  { date: "26 Jun 2026", label: "Registration Deadline", done: false },
-  { date: "11 Jul 2026, 10:00 AM IST", label: "Qualifiers Begin (12 hrs)", done: false },
-  { date: "11 Jul 2026, 10:00 PM IST", label: "Qualifiers End", done: false },
-  { date: "TBA", label: "Final Round", done: false },
+  {
+    tag: "Registration",
+    label: "Registrations Open",
+    date: "Now · Live",
+    desc: "Secure your spot for Null Origin CTF.",
+    bullets: ["Free to enter", "Team formation (1–4 members)", "Access to prep resources"],
+    Icon: Shield,
+    color: "#22c55e",
+    dot: "#22c55e",
+    done: true,
+  },
+  {
+    tag: "Deadline",
+    label: "Registration Closes",
+    date: "26 Jun 2026",
+    desc: "Last chance to register your team.",
+    bullets: ["Team finalisation", "No registrations after deadline"],
+    Icon: Calendar,
+    color: "#f59e0b",
+    dot: "#3b82f6",
+    done: false,
+  },
+  {
+    tag: "Round 1",
+    label: "Qualifiers Begin",
+    date: "11 Jul 2026 · 10:00 AM IST",
+    desc: "12-hour online CTF qualifier round.",
+    bullets: ["Solve challenges across all categories", "Real-time leaderboard", "Top teams qualify for Finals"],
+    Icon: Terminal,
+    color: "#ef4444",
+    dot: "#ef4444",
+    done: false,
+  },
+  {
+    tag: "Round 1 End",
+    label: "Qualifiers End",
+    date: "11 Jul 2026 · 10:00 PM IST",
+    desc: "Qualifier round closes. Results announced.",
+    bullets: ["Scores finalised", "Finalists notified"],
+    Icon: Code2,
+    color: "#a855f7",
+    dot: "#a855f7",
+    done: false,
+  },
+  {
+    tag: "Finale",
+    label: "Final Round & Awards",
+    date: "TBA",
+    desc: "Top teams compete in the grand finale.",
+    bullets: ["Final challenge set", "Prizes & certificates awarded", "Hall of Fame"],
+    Icon: Trophy,
+    color: "#f59e0b",
+    dot: "#f59e0b",
+    done: false,
+  },
 ];
 
-export default function FAQ() {
+interface AccordionItemProps { q: string; a: string; open: boolean; onToggle: () => void; }
+function AccordionItem({ q, a, open, onToggle }: AccordionItemProps) {
   return (
-    <section className="relative z-10 w-full max-w-7xl mx-auto px-4 py-12 space-y-12">
+    <div
+      className="border transition-all duration-200 cursor-pointer select-none"
+      style={{
+        borderColor: open ? "rgba(239,68,68,0.5)" : "rgba(63,63,70,0.8)",
+        background: open ? "rgba(239,68,68,0.04)" : "rgba(9,9,11,0.7)",
+      }}
+      onClick={onToggle}
+    >
+      <div className="flex items-center justify-between px-5 py-4 gap-4">
+        <span
+          className="text-[12px] md:text-[13px] font-black tracking-widest transition-colors"
+          style={{ fontFamily: "'Impact', 'Arial Black', sans-serif", color: open ? "#ef4444" : "#d4d4d8" }}
+        >
+          {q}
+        </span>
+        <ChevronDown
+          className="shrink-0 h-4 w-4 transition-transform duration-300"
+          style={{ color: open ? "#ef4444" : "#52525b", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
+      </div>
+      {open && (
+        <div className="px-5 pb-5">
+          <div className="w-full h-[1px] mb-4" style={{ background: "rgba(239,68,68,0.2)" }} />
+          <p className="text-[12px] text-zinc-400 leading-relaxed font-sans tracking-wide uppercase">{a}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function FAQ() {
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
+
+  return (
+    <section className="relative z-10 w-full max-w-7xl mx-auto px-4 py-16 space-y-20">
 
       {/* ── TIMELINE ── */}
       <div>
-        <div className="flex items-center gap-2 mb-6">
-          <Calendar className="h-4 w-4 text-red-500" />
-          <h2 className="text-[11px] font-black tracking-widest text-red-400 uppercase">Event Timeline</h2>
+        <div className="flex items-center gap-3 mb-10">
+          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)" }}>
+            <Calendar className="h-3.5 w-3.5 text-red-500" />
+          </div>
+          <div>
+            <p className="text-[10px] text-red-400 tracking-widest uppercase font-black">Null Origin CTF</p>
+            <h2 className="text-xl md:text-2xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>
+              EVENT TIMELINE
+            </h2>
+          </div>
         </div>
-        <div className="relative pl-4">
-          <div className="absolute left-0 top-2 bottom-2 w-[2px] bg-gradient-to-b from-red-600/60 via-zinc-700/40 to-transparent" />
-          <div className="space-y-5">
-            {TIMELINE.map((item, i) => (
-              <div key={i} className="flex items-start gap-4 group">
-                <div className={`relative shrink-0 w-3 h-3 rounded-full border-2 mt-0.5 -ml-[22px] ${item.done ? "bg-emerald-500 border-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" : "bg-zinc-900 border-zinc-600 group-hover:border-red-500 transition-colors"}`} />
-                <div>
-                  <p className="text-[10px] text-zinc-600 font-mono tracking-wider">{item.date}</p>
-                  <p className={`text-[12px] font-semibold tracking-wide ${item.done ? "text-emerald-400" : "text-zinc-300"}`}>{item.label}</p>
+
+        <div className="relative">
+          {/* Center line */}
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2"
+            style={{ background: "linear-gradient(to bottom, rgba(239,68,68,0.6), rgba(63,63,70,0.3), transparent)" }} />
+
+          <div className="flex flex-col gap-10">
+            {TIMELINE.map((item, i) => {
+              const isLeft = i % 2 === 0;
+              const Icon = item.Icon;
+              return (
+                <div key={i} className={`flex flex-col md:flex-row items-center gap-0 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"}`}>
+
+                  {/* Card */}
+                  <div className={`w-full md:w-[45%] ${isLeft ? "md:pr-10" : "md:pl-10"}`}>
+                    <div
+                      className="rounded-lg p-5 transition-all group hover:scale-[1.01]"
+                      style={{
+                        background: "rgba(9,9,11,0.85)",
+                        border: `1px solid ${item.done ? "rgba(34,197,94,0.35)" : "rgba(63,63,70,0.6)"}`,
+                        boxShadow: item.done ? "0 0 20px rgba(34,197,94,0.08)" : "none",
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-7 h-7 rounded flex items-center justify-center shrink-0"
+                          style={{ background: `${item.color}18`, border: `1px solid ${item.color}40` }}>
+                          <Icon className="h-3.5 w-3.5" style={{ color: item.color }} />
+                        </div>
+                        <span className="text-[9px] font-black tracking-widest px-2 py-0.5 rounded uppercase"
+                          style={{ background: `${item.color}18`, border: `1px solid ${item.color}35`, color: item.color }}>
+                          {item.tag}
+                        </span>
+                        {item.done && (
+                          <span className="text-[9px] font-black tracking-widest px-2 py-0.5 rounded uppercase"
+                            style={{ background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)", color: "#22c55e" }}>
+                            ● LIVE
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[14px] font-black tracking-wider text-zinc-100 mb-1"
+                        style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>{item.label}</p>
+                      <p className="text-[11px] text-zinc-500 mb-3 font-sans">{item.desc}</p>
+                      <ul className="space-y-1">
+                        {item.bullets.map((b, j) => (
+                          <li key={j} className="flex items-center gap-2 text-[11px] text-zinc-500">
+                            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: item.color }} />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Center dot + date */}
+                  <div className="hidden md:flex flex-col items-center gap-2 w-[10%] shrink-0">
+                    <div className="w-4 h-4 rounded-full border-2 z-10"
+                      style={{
+                        background: item.dot,
+                        borderColor: item.dot,
+                        boxShadow: `0 0 12px ${item.dot}80`,
+                      }} />
+                  </div>
+
+                  {/* Date side */}
+                  <div className={`hidden md:flex w-[45%] ${isLeft ? "md:pl-10 justify-start" : "md:pr-10 justify-end"}`}>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-3.5 w-3.5 text-zinc-600 shrink-0" />
+                      <span className="text-[13px] font-black tracking-wider"
+                        style={{ color: item.color, fontFamily: "'Impact','Arial Black',sans-serif" }}>
+                        {item.date}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Mobile date */}
+                  <div className="md:hidden flex items-center gap-2 mt-2">
+                    <Calendar className="h-3 w-3 text-zinc-600" />
+                    <span className="text-[11px] font-bold" style={{ color: item.color }}>{item.date}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* ── STAY CONNECTED ── */}
       <div>
-        <div className="flex items-center gap-2 mb-4">
-          <MessageCircle className="h-4 w-4 text-red-500" />
-          <h2 className="text-[11px] font-black tracking-widest text-red-400 uppercase">Stay Connected</h2>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)" }}>
+            <MessageCircle className="h-3.5 w-3.5 text-red-500" />
+          </div>
+          <h2 className="text-xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>
+            STAY CONNECTED
+          </h2>
         </div>
         <div className="flex flex-wrap gap-3">
-          <a
-            href="https://discord.gg/cyberhx"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-md text-[12px] font-bold tracking-wider transition-all border"
+          <a href="https://discord.gg/cyberhx" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-2.5 px-5 py-3 rounded-md text-[12px] font-black tracking-widest transition-all border uppercase"
             style={{ background: "rgba(88,101,242,0.12)", borderColor: "rgba(88,101,242,0.35)", color: "#7289da" }}
-            onMouseEnter={e => (e.currentTarget.style.background = "rgba(88,101,242,0.22)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "rgba(88,101,242,0.12)")}
-          >
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(88,101,242,0.25)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(88,101,242,0.12)"; }}>
             <DiscordIcon />
             Join Discord
           </a>
-          <a
-            href="https://wa.me/919569472058"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-md text-[12px] font-bold tracking-wider transition-all border"
+          <a href="https://wa.me/919569472058" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-2.5 px-5 py-3 rounded-md text-[12px] font-black tracking-widest transition-all border uppercase"
             style={{ background: "rgba(37,211,102,0.10)", borderColor: "rgba(37,211,102,0.30)", color: "#25d366" }}
-            onMouseEnter={e => (e.currentTarget.style.background = "rgba(37,211,102,0.20)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "rgba(37,211,102,0.10)")}
-          >
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(37,211,102,0.22)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(37,211,102,0.10)"; }}>
             <WhatsAppIcon />
-            WhatsApp
+            WhatsApp Support
           </a>
         </div>
       </div>
 
-      {/* ── FAQ ── */}
+      {/* ── FAQ ACCORDION ── */}
       <div>
-        <div className="flex items-center gap-2 mb-6">
-          <HelpCircle className="h-4 w-4 text-red-500" />
-          <h2 className="text-[11px] font-black tracking-widest text-red-400 uppercase">Frequently Asked Questions</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)" }}>
+            <HelpCircle className="h-3.5 w-3.5 text-red-500" />
+          </div>
+          <div>
+            <p className="text-[10px] text-red-400 tracking-widest uppercase font-black">Need answers?</p>
+            <h2 className="text-xl md:text-2xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>
+              INTEL_FAQS
+            </h2>
+          </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2 max-w-4xl">
           {FAQS.map((faq, i) => (
-            <div
+            <AccordionItem
               key={i}
-              className="bg-zinc-950/80 border border-zinc-800/70 hover:border-red-800/40 rounded-lg p-4 transition-all group"
-            >
-              <p className="text-[12px] font-bold text-zinc-100 mb-1.5 group-hover:text-red-300 transition-colors">{faq.q}</p>
-              <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">{faq.a}</p>
-            </div>
+              q={faq.q}
+              a={faq.a}
+              open={openIdx === i}
+              onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+            />
           ))}
         </div>
       </div>
