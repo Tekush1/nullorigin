@@ -1,1 +1,275 @@
 @import "tailwindcss";
+
+/* ── Design tokens ─────────────────────────────────────── */
+:root {
+  --bg: #09090b;
+  --surface: #111115;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.12);
+  --text: #e4e4e7;
+  --muted: #71717a;
+  --faint: #3f3f46;
+  --red: #ef4444;
+  --radius: 18px;
+  --radius-sm: 12px;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout shell ───────────────────────────────────────── */
+.shell {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Section spacing ────────────────────────────────────── */
+.section {
+  padding-block: clamp(4rem, 8vw, 7rem);
+}
+
+/* ── Glass card ─────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line-strong);
+}
+
+.glass-hover {
+  transition: border-color 0.2s, background 0.2s;
+}
+.glass-hover:hover {
+  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Hairline ───────────────────────────────────────────── */
+.hairline {
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+}
+
+/* ── Grid background ────────────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* ── Typography ─────────────────────────────────────────── */
+.h-display {
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #fff;
+  line-height: 1.08;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.eyebrow--center {
+  justify-content: center;
+}
+
+.lead {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.data-num {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ── Chip / tag ─────────────────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.025);
+  font-size: 12px;
+  color: var(--muted);
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  letter-spacing: 0.05em;
+  transition: border-color 0.2s;
+}
+.chip:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ── Status badge ───────────────────────────────────────── */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 5px 12px;
+}
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-decoration: none;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+.btn-primary:hover {
+  background: #dc2626;
+  box-shadow: 0 0 28px rgba(239, 68, 68, 0.35);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+.btn-ghost:hover {
+  color: #fff;
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* ── Sponsor slot ───────────────────────────────────────── */
+.slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px dashed rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.03);
+  overflow: hidden;
+  padding-block: 28px;
+}
+
+.slot--title {
+  min-height: 160px;
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(239, 68, 68, 0.06) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: sheen 3s linear infinite;
+}
+
+@keyframes sheen {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.slot-corner-tr {
+  position: absolute; top: 8px; right: 8px;
+  width: 12px; height: 12px;
+  border-top: 1px solid rgba(239, 68, 68, 0.4);
+  border-right: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.slot-corner-bl {
+  position: absolute; bottom: 8px; left: 8px;
+  width: 12px; height: 12px;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.4);
+  border-left: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* ── Scroll reveal ──────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Floating animation ─────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ── Pulse glow ─────────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.35); }
+  50%       { box-shadow: 0 0 16px 4px rgba(239, 68, 68, 0.15); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
