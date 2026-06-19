@@ -14,7 +14,7 @@ export default function Prizes() {
           <SectionHeading
             tag="Rewards"
             title="Prize Pool"
-            sub="A ₹50,000+ pool, plus certificates and category recognition."
+            sub="Yet to be announced, but expect some exciting rewards for the top solvers!"
           />
         </Reveal>
         <div className="grid sm:grid-cols-3 gap-5 mt-12 items-stretch">
