@@ -1,9 +1,9 @@
 import { Reveal, SectionHeading } from "../ui";
 
 const TIERS = [
-  { rank: "1st", prize: "₹25,000", icon: "🏆", featured: true },
-  { rank: "2nd", prize: "₹15,000", icon: "🥈", featured: false },
-  { rank: "3rd", prize: "₹10,000", icon: "🥉", featured: false },
+  { rank: "1st", prize: "", icon: "🏆", featured: true },
+  { rank: "2nd", prize: "", icon: "🥈", featured: false },
+  { rank: "3rd", prize: "", icon: "🥉", featured: false },
 ];
 
 export default function Prizes() {
