@@ -1,44 +1,96 @@
-import { ArrowLeft } from "lucide-react";
 import { sound } from "../../hooks/utils/audio";
 
 interface HeaderProps { onBack: () => void; }
 
 export function RegistrationHeader({ onBack }: HeaderProps) {
   return (
-    <header className="relative z-20 w-full px-5 md:px-8 py-3 md:py-4 flex justify-between items-center bg-black/90 backdrop-blur-md border-b border-red-600/25">
-      <div className="flex items-center gap-3 md:gap-4">
-        <img
-          src="/mask.png" alt="Null Origin"
-          className="h-9 md:h-12 object-contain filter drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]"
-          onError={(e) => {
-            const t = e.target as HTMLImageElement;
-            if (t.src.endsWith("/mask.png")) t.src = "/logo.png";
-            else t.style.display = "none";
-          }}
-        />
-        <span className="text-[12px] md:text-[14px] tracking-widest text-zinc-100 uppercase font-black font-sans">
-          NULL ORIGIN{" "}
-          <span className="hidden sm:inline text-red-500 font-mono">// SECURED PORTAL</span>
-        </span>
+    <header
+      className="sticky top-0 z-[500] border-b-[3px] border-[#000]"
+      style={{ background: "#0a0a12" }}
+    >
+      <div className="max-w-[1180px] mx-auto px-6 flex items-center justify-between py-[14px]">
+        {/* Left: icon + title */}
+        <div className="flex items-center gap-[14px]">
+          <div
+            className="w-[38px] h-[38px] bg-[#000] border-[3px] border-[#000] flex items-center justify-center overflow-hidden"
+            style={{ boxShadow: "4px 4px 0 #000" }}
+          >
+            <img src="/mask.png" alt="Null Origin"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                const t = e.target as HTMLImageElement;
+                if (t.src.endsWith("/mask.png")) t.src = "/logo.png";
+                else t.style.display = "none";
+              }}
+            />
+          </div>
+          <div>
+            <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "13px", letterSpacing: "1px" }}>
+              NULL ORIGIN
+            </div>
+            <div className="text-[14px] text-[#7c8389] tracking-[1px]" style={{ fontFamily: "'VT323', monospace" }}>
+              CTF · 2026
+            </div>
+          </div>
+        </div>
+
+        {/* Right: buttons */}
+        <div className="flex gap-[10px]">
+          <button
+            onClick={() => { sound.playClick?.(); onBack(); }}
+            onMouseEnter={() => sound.playHover?.()}
+            className="cursor-pointer"
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "11px",
+              padding: "11px 16px",
+              border: "3px solid #000",
+              background: "#f4f6f5",
+              color: "#000",
+              boxShadow: "4px 4px 0 #000",
+              transition: "transform .08s, box-shadow .08s",
+            }}
+            onMouseDown={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px,2px)";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #000";
+            }}
+            onMouseUp={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = "";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #000";
+            }}
+          >
+            ← BACK
+          </button>
+          <a
+            href="#registerForm"
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "11px",
+              padding: "11px 16px",
+              border: "3px solid #000",
+              background: "#ff3355",
+              color: "#000",
+              boxShadow: "4px 4px 0 #000",
+              textDecoration: "none",
+              display: "inline-block",
+            }}
+          >
+            REGISTER
+          </a>
+        </div>
       </div>
-      <button
-        onClick={onBack}
-        onMouseEnter={() => sound.playHover?.()}
-        aria-label="Back to portal"
-        className="flex items-center gap-2 px-3 md:px-4 py-2 border border-zinc-800 rounded-md hover:border-red-600/40 hover:text-red-400 hover:bg-red-950/10 text-zinc-500 text-[11px] font-bold tracking-widest uppercase transition-all focus:outline-none focus:ring-2 focus:ring-red-600/40 focus:ring-offset-1 focus:ring-offset-black cursor-pointer"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-        <span className="hidden sm:inline">Back</span>
-      </button>
     </header>
   );
 }
 
 export function RegistrationFooter() {
   return (
-    <footer className="relative z-10 w-full text-center py-5 bg-black/95 border-t border-zinc-900/60 mt-auto">
-      <p className="text-[10px] text-zinc-700 tracking-wider font-mono">
-        © {new Date().getFullYear()} NULL ORIGIN CTF · NULLORIGIN.CYBERHX.COM · SECURED OVER HTTPS
+    <footer
+      className="text-center border-t-[3px] border-[#000] mt-[60px]"
+      style={{ padding: "50px 0 30px", background: "#101018" }}
+    >
+      <p className="text-[14px] text-[#7c8389]" style={{ fontFamily: "'VT323', monospace" }}>
+        © {new Date().getFullYear()} NULL ORIGIN CTF · Built by Team CyberXoX · Powered by CyberHX
       </p>
     </footer>
   );

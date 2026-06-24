@@ -52,7 +52,7 @@ function TierHeader({ code, name, perks, allocated, total, icon }: {
 export default function Sponsors() {
   return (
     <section id="sponsors" className="section relative">
-      <div className="absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(239,68,68,0.06),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(255, 51, 85,0.06),transparent_70%)]" />
       <div className="shell relative">
         <Reveal>
           <SectionHeading tag="Partnership" title="Sponsors & Partners" sub="Null Origin is built with its partners. These tiers are open now — your brand could anchor the next edition." />

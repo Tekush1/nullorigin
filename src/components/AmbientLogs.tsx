@@ -4,7 +4,7 @@ interface AmbientLogsProps {
 
 export default function AmbientLogs({ logs }: AmbientLogsProps) {
   return (
-    <div className="mt-8 border-t border-zinc-900/80 pt-6">
+    <div className="border-t border-zinc-900/80 pt-4 pb-2">
       <div className="flex items-center justify-between mb-2.5">
         <div className="flex items-center space-x-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true" />

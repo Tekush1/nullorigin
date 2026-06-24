@@ -27,7 +27,7 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-x-hidden">
+    <div id="top" className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-x-hidden">
       <HackerBackground />
       <div className="relative z-10">
         <Navbar
@@ -36,22 +36,10 @@ export default function App() {
           onRegister={() => setPage("register")}
         />
 
-        {/* Hero section — keeps existing terminal/sidebar layout */}
-        <section id="top" className="relative pt-24 pb-12">
-          <div className="absolute inset-0 grid-bg opacity-40" />
-          <main className="relative z-10 flex flex-col lg:flex-row gap-6 px-4 py-8 max-w-7xl mx-auto">
-            <HomeHero {...state} onRegister={() => setPage("register")} />
-            <HomeSidebar
-              teaserInput={state.teaserInput}
-              teaserStatus={state.teaserStatus}
-              setTeaserInput={state.setTeaserInput}
-              handleTeaserVerify={state.handleTeaserVerify}
-              handleKeyInteraction={state.handleKeyInteraction}
-            />
-          </main>
-        </section>
+        {/* Hero section — wowi_wowi marquee style */}
+        <HomeHero {...state} onRegister={() => setPage("register")} />
 
-        <AmbientLogs logs={state.logs} />
+
 
         {/* New design sections */}
         <About />

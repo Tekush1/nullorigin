@@ -1,4 +1,3 @@
-import { Calendar, Terminal, Users, CheckCircle, ArrowRight } from "lucide-react";
 import { sound } from "../hooks/utils/audio";
 
 interface TimeLeft {
@@ -15,128 +14,170 @@ interface HomeHeroProps {
 
 export default function HomeHero({ timeLeft, onRegister }: HomeHeroProps) {
   return (
-    <div className="lg:col-span-7 flex flex-col items-start text-left justify-center space-y-7">
-
-      {/* LOGO — DO NOT TOUCH */}
-      <div className="w-full relative space-y-4">
+    <section
+      className="relative w-full overflow-hidden text-center border-b-[3px] border-black"
+      style={{ padding: "64px 0 50px", background: "linear-gradient(180deg, #0b1422 0%, #0e1a2c 45%, #142235 75%, #0a0a12 100%)" }}
+    >
+      {/* ── hero scene (moon / confetti / skyline / monitors) ── */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* moon */}
         <div
-          className="flex items-center justify-start mb-2 max-w-md md:max-w-xl"
-          onMouseEnter={() => sound.playHover()}
-        >
-          <img
-            src="/logo.png"
-            alt="Null Origin Logo"
-            referrerPolicy="no-referrer"
-            onError={(e) => { (e.target as HTMLElement).style.display = "none"; }}
-            className="max-h-[360px] md:max-h-[480px] w-full object-contain filter drop-shadow-[0_0_45px_rgba(239,68,68,0.75)] transition-all hover:scale-105 duration-500 cursor-crosshair"
-          />
-        </div>
+          className="absolute -top-10 left-1/2 -translate-x-1/2 w-[120px] h-[120px] md:w-[170px] md:h-[170px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 50%, #ffe9a8 0%, #ffc23c 45%, rgba(255,194,60,0) 72%)",
+            filter: "blur(1px)",
+          }}
+        />
 
-        <div
-          className="pt-1 text-sm md:text-lg font-bold tracking-widest text-[#22c55e] flex items-center space-x-2 select-none"
-          onMouseEnter={() => sound.playHover()}
-        >
-          <span>COMING SOON</span>
-          <span className="w-2 h-4 bg-[#22c55e] animate-pulse" aria-hidden="true" />
-        </div>
-      </div>
-
-      {/* ── COUNTDOWN ── */}
-      <div
-        onMouseEnter={() => sound.playHover()}
-        className="w-full max-w-md bg-zinc-950/90 border border-zinc-800/80 rounded-lg p-5 shadow-2xl relative overflow-hidden group hover:border-[#22c55e]/30 transition-all duration-300"
-      >
-        <div className="absolute top-0 left-0 w-12 h-[1px] bg-[#22c55e]/40" aria-hidden="true" />
-        <div className="absolute top-0 left-0 w-[1px] h-12 bg-[#22c55e]/40" aria-hidden="true" />
-        <div className="absolute bottom-0 right-0 w-12 h-[1px] bg-red-600/20" aria-hidden="true" />
-        <div className="absolute bottom-0 right-0 w-[1px] h-12 bg-red-600/20" aria-hidden="true" />
-
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-[10px] tracking-widest text-[#22c55e] uppercase flex items-center gap-1.5 font-bold">
-            <Calendar className="h-3 w-3" aria-hidden="true" />
-            LAUNCH IN
-          </span>
-          <span className="text-[9px] bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/30 px-2 py-0.5 rounded uppercase font-black tracking-widest select-none">
-            T-MINUS
-          </span>
-        </div>
-
-        <div className="grid grid-cols-4 gap-2 md:gap-3 text-center" role="timer" aria-label="Time until CTF launch">
-          {[
-            { val: timeLeft.days, label: "DAYS" },
-            { val: timeLeft.hours, label: "HOURS" },
-            { val: timeLeft.minutes, label: "MINS" },
-            { val: timeLeft.seconds, label: "SECS", pulse: true },
-          ].map(({ val, label, pulse }) => (
-            <div key={label} className="bg-[#050505] border border-zinc-800/80 p-2.5 md:p-3 rounded-md group-hover:border-zinc-700/50 transition-colors">
-              <p className={`text-2xl md:text-3xl font-extrabold tabular-nums ${pulse ? "text-red-500 animate-pulse" : "text-[#22c55e]"}`}>
-                {val}
-              </p>
-              <span className="text-[9px] tracking-widest text-zinc-600 uppercase font-bold mt-1 block">{label}</span>
-            </div>
+        {/* scattered confetti */}
+        <div className="absolute inset-0 overflow-hidden">
+          {Array.from({ length: 40 }).map((_, i) => (
+            <span
+              key={i}
+              className="absolute opacity-85"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 78}%`,
+                width: `${3 + Math.random() * 4}px`,
+                height: `${3 + Math.random() * 4}px`,
+                background: i % 2 === 0 ? "var(--red)" : "#3a6ea5",
+              }}
+            />
           ))}
         </div>
+
+        {/* pixel skyline */}
+        <svg
+          className="absolute left-0 right-0 bottom-0 w-full block h-[180px] md:h-[220px]"
+          viewBox="0 0 1440 220"
+          preserveAspectRatio="none"
+        >
+          <g fill="#101c2e">
+            <rect x="0" y="120" width="90" height="100" />
+            <rect x="90" y="90" width="70" height="130" />
+            <rect x="160" y="140" width="60" height="80" />
+            <rect x="220" y="70" width="80" height="150" />
+            <rect x="300" y="110" width="55" height="110" />
+            <rect x="355" y="60" width="90" height="160" />
+            <rect x="445" y="130" width="65" height="90" />
+            <rect x="510" y="95" width="75" height="125" />
+            <rect x="585" y="150" width="50" height="70" />
+            <rect x="635" y="40" width="100" height="180" />
+            <rect x="735" y="100" width="70" height="120" />
+            <rect x="805" y="135" width="60" height="85" />
+            <rect x="865" y="75" width="85" height="145" />
+            <rect x="950" y="115" width="55" height="105" />
+            <rect x="1005" y="55" width="95" height="165" />
+            <rect x="1100" y="125" width="65" height="95" />
+            <rect x="1165" y="90" width="75" height="130" />
+            <rect x="1240" y="145" width="55" height="75" />
+            <rect x="1295" y="65" width="85" height="155" />
+            <rect x="1380" y="115" width="60" height="105" />
+          </g>
+          <g fill="#3a6ea5" opacity=".55">
+            <rect x="20" y="140" width="6" height="8" /><rect x="40" y="160" width="6" height="8" />
+            <rect x="105" y="110" width="6" height="8" /><rect x="125" y="135" width="6" height="8" />
+            <rect x="235" y="95" width="6" height="8" /><rect x="260" y="125" width="6" height="8" />
+            <rect x="370" y="85" width="6" height="8" /><rect x="395" y="115" width="6" height="8" />
+            <rect x="650" y="65" width="6" height="8" /><rect x="675" y="100" width="6" height="8" />
+            <rect x="750" y="125" width="6" height="8" /><rect x="820" y="155" width="6" height="8" />
+            <rect x="880" y="100" width="6" height="8" /><rect x="1020" y="80" width="6" height="8" />
+            <rect x="1180" y="115" width="6" height="8" /><rect x="1310" y="90" width="6" height="8" />
+          </g>
+          <rect x="0" y="210" width="1440" height="10" fill="#0a121f" />
+        </svg>
+
+        {/* retro monitors */}
+        <svg className="absolute bottom-2 w-[54px] hidden md:block" style={{ left: "7%" }} viewBox="0 0 40 40">
+          <rect x="2" y="2" width="36" height="26" fill="#1c1c2a" stroke="#000" strokeWidth="2" />
+          <rect x="6" y="6" width="28" height="18" fill="#39ff6a" />
+          <rect x="14" y="30" width="12" height="4" fill="#1c1c2a" />
+          <rect x="10" y="34" width="20" height="3" fill="#000" />
+        </svg>
+        <svg className="absolute bottom-2 w-[38px] hidden md:block" style={{ left: "20%" }} viewBox="0 0 40 40">
+          <rect x="2" y="2" width="36" height="26" fill="#f4f6f5" stroke="#000" strokeWidth="2" />
+          <circle cx="14" cy="14" r="2.5" fill="#000" />
+          <circle cx="26" cy="14" r="2.5" fill="#000" />
+          <rect x="13" y="20" width="14" height="3" fill="#000" />
+          <rect x="14" y="30" width="12" height="4" fill="#cfd3d2" />
+          <rect x="10" y="34" width="20" height="3" fill="#000" />
+        </svg>
+        <svg className="absolute bottom-2 w-[54px] hidden md:block" style={{ right: "8%" }} viewBox="0 0 40 40">
+          <rect x="2" y="2" width="36" height="26" fill="#1c1c2a" stroke="#000" strokeWidth="2" />
+          <rect x="6" y="6" width="28" height="18" fill="#39c9ff" />
+          <rect x="14" y="30" width="12" height="4" fill="#1c1c2a" />
+          <rect x="10" y="34" width="20" height="3" fill="#000" />
+        </svg>
+        <svg className="absolute bottom-2 w-[30px] hidden md:block" style={{ right: "18%" }} viewBox="0 0 40 40">
+          <rect x="2" y="2" width="36" height="26" fill="#1c1c2a" stroke="#000" strokeWidth="2" />
+          <rect x="6" y="6" width="28" height="18" fill="#ff3355" />
+          <rect x="14" y="30" width="12" height="4" fill="#1c1c2a" />
+          <rect x="10" y="34" width="20" height="3" fill="#000" />
+        </svg>
       </div>
 
-      {/* ── REGISTRATION CARD ── */}
-      <div className="w-full max-w-lg bg-[#06060c]/90 border border-zinc-800/80 hover:border-red-800/40 transition-all duration-300 rounded-lg shadow-2xl relative overflow-hidden group">
-        <div className="h-[2px] w-full bg-gradient-to-r from-red-700 via-red-500 to-transparent" />
-
-        <div className="absolute top-3 right-3">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-red-700/90 rounded text-[9px] font-black uppercase tracking-widest text-white shadow-[0_0_10px_rgba(239,68,68,0.4)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            OPEN
-          </div>
+      {/* ── content ── */}
+      <div className="relative z-10 shell">
+        <div
+          className="font-display uppercase mb-[22px] tracking-[2px] text-[11px] text-[var(--amber)]"
+          style={{ animation: "pulse-dot 1s steps(1) infinite" }}
+        >
+          ▸ INSERT COIN
         </div>
 
-        <div className="p-6 md:p-7 space-y-5">
-          <div className="pr-16">
-            <div className="flex items-center gap-2 mb-2">
-              <Terminal className="h-3.5 w-3.5 text-red-500 flex-shrink-0" aria-hidden="true" />
-              <h2 className="text-[10px] font-black tracking-widest text-red-400 uppercase">
-                TEAM REGISTRATION
-              </h2>
-            </div>
-            <p className="text-sm md:text-[15px] font-bold text-zinc-100 tracking-wide leading-snug">
-              Register for Null Origin CTF
-            </p>
-          </div>
+        <h1
+          className="h-display"
+          style={{ fontSize: "clamp(28px,8vw,72px)", lineHeight: "1.1" }}
+        >
+          NULL
+          <br />
+          ORIGIN
+        </h1>
 
-          <div className="space-y-2 text-[12px] md:text-[13px] text-zinc-400 leading-relaxed font-sans">
-            <p>
-              Compete with hackers, researchers, and security enthusiasts from around the world.
-              Cryptography · Binary Exploitation · Web Security · Forensics · OSINT.
-            </p>
-            <div className="flex items-start gap-2 border-l-2 border-red-800/50 pl-3 py-0.5">
-              <Users className="h-3.5 w-3.5 text-red-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-              <p className="text-zinc-500 text-[11px]">
-                Team Size: 1–4 Members · Registrations are now live. Secure your spot before they close.
-              </p>
-            </div>
-          </div>
+        <p className="lead mx-auto mt-[34px] max-w-[50ch]">
+          Select your domain. Beat the clock. Capture every flag — a 24-hour CTF across six attack
+          levels.
+        </p>
 
-          <div className="flex flex-wrap gap-2">
-            {["Free to Enter", "Online Event", "Global"].map((tag) => (
-              <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 bg-zinc-900/70 border border-zinc-800 rounded text-[10px] text-zinc-500 tracking-wider font-mono">
-                <CheckCircle className="h-2.5 w-2.5 text-emerald-500" />
-                {tag}
-              </span>
-            ))}
-          </div>
-
+        <div className="flex gap-3 justify-center mt-[28px] flex-wrap px-4">
           <button
             type="button"
-            onClick={onRegister}
+            onClick={() => { onRegister(); sound.playClick(); }}
             onMouseEnter={() => sound.playHover()}
-            aria-label="Go to team registration form"
-            className="w-full flex items-center justify-center gap-2.5 bg-red-700 hover:bg-red-600 active:bg-red-800 border border-red-500/60 hover:border-red-400/80 text-white font-black tracking-widest px-5 py-3.5 rounded-md text-[12px] transition-all uppercase shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:shadow-[0_0_30px_rgba(239,68,68,0.35)] focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-[#06060c] group cursor-pointer"
+            className="btn btn-primary !text-[13px] !py-[18px] !px-[28px] cursor-pointer"
           >
-            <span>REGISTER YOUR TEAM</span>
-            <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+            ▸ START GAME
           </button>
+          <a
+            href="#about"
+            onMouseEnter={() => sound.playHover()}
+            className="btn btn-ghost !text-[13px] !py-[18px] !px-[28px]"
+            style={{ background: "var(--white)", color: "#000" }}
+          >
+            VIEW INTRO
+          </a>
+        </div>
+
+        <div className="coin-counter glass inline-flex mt-[36px] mx-4">
+          <div className="coin">
+            <div className="n">{timeLeft.days}</div>
+            <div className="l">DAYS</div>
+          </div>
+          <div className="coin">
+            <div className="n">{timeLeft.hours}</div>
+            <div className="l">HRS</div>
+          </div>
+          <div className="coin">
+            <div className="n">{timeLeft.minutes}</div>
+            <div className="l">MIN</div>
+          </div>
+          <div className="coin r">
+            <div className="n">{timeLeft.seconds}</div>
+            <div className="l">SEC</div>
+          </div>
         </div>
       </div>
-
-    </div>
+    </section>
   );
 }

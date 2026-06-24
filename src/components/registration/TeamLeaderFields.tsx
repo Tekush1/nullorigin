@@ -1,4 +1,3 @@
-import { Users, Globe, User, Mail } from "lucide-react";
 import { FormData, inputClass, labelClass, sectionHeadingClass } from "./types";
 
 interface Props {
@@ -9,53 +8,78 @@ interface Props {
 export default function TeamLeaderFields({ form, onChange }: Props) {
   return (
     <>
-      <fieldset className="space-y-4">
-        <legend className={`${sectionHeadingClass} border-red-600 text-red-400`}>Team Information</legend>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+      {/* Team Information */}
+      <div className="mb-[30px]">
+        <div className={sectionHeadingClass}>
+          <span className="inline-block w-1 h-[14px] bg-[#ff3355] flex-shrink-0" />
+          TEAM INFORMATION
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+          <div className="flex flex-col gap-2">
             <label htmlFor="teamName" className={labelClass}>
-              <Users className="h-3 w-3 text-red-500" aria-hidden="true" />
-              Team Name <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+              TEAM NAME <span className="text-[#ff3355]">*</span>
             </label>
-            <input id="teamName" type="text" required value={form.teamName}
+            <input
+              id="teamName" type="text" required
+              value={form.teamName}
               onChange={(e) => onChange("teamName", e.target.value)}
-              placeholder="TEAM_NAME" autoComplete="off" className={inputClass} />
+              placeholder="TEAM_NAME"
+              autoComplete="off"
+              className={inputClass}
+            />
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             <label htmlFor="country" className={labelClass}>
-              <Globe className="h-3 w-3 text-red-500" aria-hidden="true" />
-              Country <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+              COUNTRY <span className="text-[#ff3355]">*</span>
             </label>
-            <input id="country" type="text" required value={form.country}
+            <input
+              id="country" type="text" required
+              value={form.country}
               onChange={(e) => onChange("country", e.target.value)}
-              placeholder="COUNTRY" autoComplete="country-name" className={inputClass} />
+              placeholder="COUNTRY"
+              autoComplete="country-name"
+              className={inputClass}
+            />
           </div>
         </div>
-      </fieldset>
+      </div>
 
-      <fieldset className="space-y-4">
-        <legend className={`${sectionHeadingClass} border-red-600 text-red-400`}>Team Leader</legend>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+      {/* Team Leader */}
+      <div className="mb-[30px]">
+        <div className={sectionHeadingClass}>
+          <span className="inline-block w-1 h-[14px] bg-[#ff3355] flex-shrink-0" />
+          TEAM LEADER
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+          <div className="flex flex-col gap-2">
             <label htmlFor="leaderName" className={labelClass}>
-              <User className="h-3 w-3 text-red-500" aria-hidden="true" />
-              Full Name <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+              FULL NAME <span className="text-[#ff3355]">*</span>
             </label>
-            <input id="leaderName" type="text" required value={form.leaderName}
+            <input
+              id="leaderName" type="text" required
+              value={form.leaderName}
               onChange={(e) => onChange("leaderName", e.target.value)}
-              placeholder="LEADER_NAME" autoComplete="name" className={inputClass} />
+              placeholder="LEADER_NAME"
+              autoComplete="name"
+              className={inputClass}
+            />
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             <label htmlFor="leaderEmail" className={labelClass}>
-              <Mail className="h-3 w-3 text-red-500" aria-hidden="true" />
-              Email <span className="text-red-500 ml-0.5" aria-label="required">*</span>
+              EMAIL <span className="text-[#ff3355]">*</span>
             </label>
-            <input id="leaderEmail" type="email" required value={form.leaderEmail}
+            <input
+              id="leaderEmail" type="email" required
+              value={form.leaderEmail}
               onChange={(e) => onChange("leaderEmail", e.target.value)}
-              placeholder="LEADER@DOMAIN.COM" autoComplete="email" inputMode="email" className={inputClass} />
+              placeholder="LEADER@DOMAIN.COM"
+              autoComplete="email"
+              inputMode="email"
+              className={inputClass}
+            />
           </div>
         </div>
-      </fieldset>
+      </div>
     </>
   );
 }

@@ -19,7 +19,7 @@ export default function RegistrationPage({ onBack }: Props) {
   };
 
   const toggleMember = (n: number) => {
-    sound.playClick();
+    sound.playClick?.();
     setExpandedMembers((prev) =>
       prev.includes(n) ? prev.filter((x) => x !== n) : [...prev, n]
     );
@@ -60,10 +60,21 @@ export default function RegistrationPage({ onBack }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#020202] text-gray-100 font-mono flex flex-col relative overflow-x-hidden">
+    <div
+      className="min-h-screen flex flex-col relative overflow-x-hidden"
+      style={{
+        background: "#0a0a12",
+        color: "#f4f6f5",
+        fontFamily: "'VT323', monospace",
+        fontSize: "20px",
+        lineHeight: 1.5,
+      }}
+    >
       <RegistrationHeader onBack={onBack} />
-      <RegFormCard form={form} status={status} errorMsg={errorMsg} expandedMembers={expandedMembers}
-        onSubmit={handleSubmit} onChange={handleChange} onToggleMember={toggleMember} />
+      <RegFormCard
+        form={form} status={status} errorMsg={errorMsg} expandedMembers={expandedMembers}
+        onSubmit={handleSubmit} onChange={handleChange} onToggleMember={toggleMember}
+      />
       <RegistrationFooter />
     </div>
   );

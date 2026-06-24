@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, ShieldCheck, Terminal, Users, AlertCircle, Loader2, Calendar } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { sound } from "../../hooks/utils/audio";
 import { FormData, SubmitStatus } from "./types";
 import TeamLeaderFields from "./TeamLeaderFields";
@@ -14,75 +14,183 @@ interface Props {
 
 export default function RegFormCard({ form, status, errorMsg, expandedMembers, onSubmit, onChange, onToggleMember }: Props) {
   return (
-    <main className="flex-1 w-full max-w-3xl mx-auto px-4 md:px-8 py-10 relative z-10">
-      <div className="mb-7 text-[11px] md:text-xs text-zinc-500 select-none flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span className="text-red-500 font-bold">operator@nullorigin:~$</span>
-        <span className="text-emerald-400 font-semibold">./register --mode=team --portal=nullorigin.cyberhx.com</span>
-        <span className="h-4 w-1.5 bg-red-600 inline-block animate-pulse" aria-hidden="true" />
+    <main
+      className="flex-1 w-full max-w-[880px] mx-auto px-6 py-0 relative z-10"
+      style={{
+        backgroundImage: `
+          radial-gradient(circle at 1px 1px, rgba(255,255,255,.035) 1px, transparent 0),
+          linear-gradient(rgba(57,255,106,.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(57,255,106,.035) 1px, transparent 1px)
+        `,
+        backgroundSize: "24px 24px, 96px 96px, 96px 96px",
+      }}
+    >
+      {/* Terminal header */}
+      <div className="pt-[54px] pb-[30px]">
+        {/* Terminal line */}
+        <div
+          className="flex items-center gap-[10px] overflow-x-auto whitespace-nowrap border-[3px] border-[#000] px-[18px] py-[14px]"
+          style={{ fontFamily: "'VT323', monospace", fontSize: "19px", color: "#39ff6a", background: "#000" }}
+        >
+          <span style={{ color: "#ff3355", flexShrink: 0 }}>operator@nullorigin:~$</span>
+          <span style={{ color: "#39ff6a" }}>./register --mode=team --portal=nullorigin.ctf</span>
+          <span
+            className="inline-block w-[10px] h-[18px] bg-[#39ff6a] flex-shrink-0 animate-pulse"
+            style={{ animation: "blink 1s steps(1) infinite" }}
+          />
+        </div>
+
+        {/* Status chips */}
+        <div className="flex flex-wrap gap-[14px] mt-[20px]">
+          {[
+            { label: "REGISTRATION LIVE", live: true },
+            { label: "CLOSES 08 JULY 2026" },
+            { label: "1–4 MEMBERS" },
+          ].map(({ label, live }) => (
+            <div
+              key={label}
+              className="inline-flex items-center gap-2 px-[14px] py-[10px] border-[3px] border-[#000]"
+              style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: "10px",
+                background: "#15151f",
+              }}
+            >
+              {live && (
+                <span
+                  className="w-2 h-2 bg-[#39ff6a] border border-[#000] flex-shrink-0 animate-pulse"
+                />
+              )}
+              {label}
+            </div>
+          ))}
+        </div>
+
+        {/* Page title */}
+        <div className="flex items-center gap-[16px] mt-[40px]">
+          <div
+            className="w-[44px] h-[44px] bg-[#ff3355] border-[3px] border-[#000] flex items-center justify-center flex-shrink-0"
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "16px",
+              color: "#000",
+            }}
+          >
+            &gt;_
+          </div>
+          <div>
+            <h1
+              style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: "clamp(16px, 3vw, 22px)",
+                lineHeight: 1.5,
+              }}
+            >
+              TEAM REGISTRATION FORM
+            </h1>
+            <p className="text-[15px] text-[#7c8389] mt-1" style={{ fontFamily: "'VT323', monospace" }}>
+              NULL ORIGIN CTF · OFFICIAL OPERATOR ENROLLMENT
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-8" role="status" aria-label="Registration status">
-        <div className="flex items-center gap-2 bg-emerald-950/20 border border-emerald-800/50 rounded-md px-3 py-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-          <span className="text-[10px] tracking-widest text-emerald-400 font-black uppercase">Registration Live</span>
-        </div>
-        <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800 rounded-md px-3 py-1.5">
-          <Calendar className="h-3 w-3 text-red-400 flex-shrink-0" aria-hidden="true" />
-          <span className="text-[10px] tracking-widest text-zinc-400 font-bold uppercase">Closes 08 July 2025</span>
-        </div>
-        <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800 rounded-md px-3 py-1.5">
-          <Users className="h-3 w-3 text-zinc-400 flex-shrink-0" aria-hidden="true" />
-          <span className="text-[10px] tracking-widest text-zinc-400 font-bold uppercase">1–4 Members</span>
-        </div>
-      </div>
+      {/* Form card */}
+      <div
+        id="registerForm"
+        className="border-[3px] border-[#000] px-[30px] py-[38px] mb-10"
+        style={{ background: "#15151f", boxShadow: "8px 8px 0 #000" }}
+      >
+        <form onSubmit={onSubmit} noValidate className="space-y-0">
+          <TeamLeaderFields form={form} onChange={onChange} />
 
-      <div className="bg-[#06060c]/90 border border-zinc-800/80 rounded-xl shadow-2xl relative overflow-hidden">
-        <div className="h-[2px] w-full bg-gradient-to-r from-red-700 via-red-500 to-transparent" aria-hidden="true" />
-        <div className="p-6 md:p-8">
-          <div className="flex items-center gap-3 mb-7 pb-5 border-b border-zinc-800/80">
-            <div className="p-2 bg-red-950/30 border border-red-900/40 rounded-md">
-              <Terminal className="h-4 w-4 text-red-500" aria-hidden="true" />
+          {/* Members section */}
+          <div className="mb-[30px]">
+            <div
+              className="flex items-center gap-2.5 pb-2.5 border-b-[3px] border-[#000] mb-4"
+              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "11px", color: "#ff3355" }}
+            >
+              <span className="inline-block w-1 h-[14px] bg-[#ff3355] flex-shrink-0" />
+              TEAM MEMBERS
             </div>
-            <div>
-              <h1 className="text-[13px] font-black tracking-widest text-zinc-100 uppercase">Team Registration Form</h1>
-              <p className="text-[10px] text-zinc-600 mt-0.5 tracking-wider">NULL ORIGIN CTF · OFFICIAL OPERATOR ENROLLMENT</p>
-            </div>
+            {[1, 2, 3, 4].map((n) => (
+              <MemberField
+                key={n} n={n} required={n === 1}
+                expanded={expandedMembers.includes(n)}
+                form={form} onToggle={onToggleMember} onChange={onChange}
+              />
+            ))}
           </div>
 
-          <form onSubmit={onSubmit} className="space-y-8" noValidate>
-            <TeamLeaderFields form={form} onChange={onChange} />
-            {[1, 2, 3, 4].map((n) => (
-              <MemberField key={n} n={n} required={n === 1}
-                expanded={expandedMembers.includes(n)}
-                form={form} onToggle={onToggleMember} onChange={onChange} />
-            ))}
-
-            {status === "error" && (
-              <div role="alert" aria-live="assertive" className="flex items-start gap-3 bg-red-950/25 border border-red-800/50 rounded-md p-4">
-                <AlertCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" aria-hidden="true" />
-                <div className="space-y-1">
-                  <p className="text-[11px] text-red-400 font-black uppercase tracking-wider">Submission Failed</p>
-                  <p className="text-[11px] text-red-300/70 font-sans">{errorMsg}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-3 pt-1">
-              <button type="submit" disabled={status === "loading"} onMouseEnter={() => sound.playHover?.()}
-                aria-label="Submit team registration" aria-busy={status === "loading"}
-                className="w-full flex items-center justify-center gap-3 bg-red-700 hover:bg-red-600 active:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed border border-red-500/60 hover:border-red-400 text-white font-black tracking-widest px-5 py-3.5 rounded-md text-[12px] transition-all uppercase cursor-pointer shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:shadow-[0_0_35px_rgba(239,68,68,0.35)] focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-[#06060c] group">
-                {status === "loading" ? (
-                  <><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /><span>Submitting Registration…</span></>
-                ) : (
-                  <><ShieldCheck className="h-4 w-4" aria-hidden="true" /><span>Register Team</span><ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" aria-hidden="true" /></>
-                )}
-              </button>
-              <p className="text-[10px] text-zinc-700 text-center tracking-wider font-sans">
-                By registering you agree to participate ethically · Null Origin CTF 2025
-              </p>
+          {/* Error message */}
+          {status === "error" && (
+            <div
+              className="border-[3px] border-[#ff3355] p-[14px] mb-4"
+              style={{ background: "rgba(255,51,85,.12)", color: "#ff3355", fontFamily: "'VT323', monospace", fontSize: "15px" }}
+              role="alert"
+            >
+              ✗ SUBMISSION FAILED — {errorMsg}
             </div>
-          </form>
-        </div>
+          )}
+
+          {/* Ethics checkbox */}
+          <label className="flex items-start gap-3 mt-2 mb-5 cursor-pointer">
+            <input
+              type="checkbox"
+              required
+              className="mt-1 flex-shrink-0"
+              style={{ accentColor: "#39ff6a" }}
+            />
+            <span
+              className="text-[15px] text-[#7c8389]"
+              style={{ fontFamily: "'VT323', monospace" }}
+            >
+              I confirm my team will participate ethically and follow the Null Origin rules of engagement.
+            </span>
+          </label>
+
+          {/* Submit button */}
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            onMouseEnter={() => sound.playHover?.()}
+            aria-label="Submit team registration"
+            className="w-full flex items-center justify-center gap-[10px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "13px",
+              padding: "18px",
+              border: "3px solid #000",
+              background: "#ff3355",
+              color: "#000",
+              boxShadow: "4px 4px 0 #000",
+              transition: "transform .08s, box-shadow .08s",
+            }}
+            onMouseDown={e => {
+              if (status !== "loading") {
+                (e.currentTarget as HTMLButtonElement).style.transform = "translate(2px,2px)";
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "2px 2px 0 #000";
+              }
+            }}
+            onMouseUp={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = "";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = "4px 4px 0 #000";
+            }}
+          >
+            {status === "loading" ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /><span>SUBMITTING...</span></>
+            ) : (
+              <><span>🛡</span><span>REGISTER TEAM →</span></>
+            )}
+          </button>
+
+          <p
+            className="text-center mt-[16px] text-[14px] text-[#7c8389]"
+            style={{ fontFamily: "'VT323', monospace" }}
+          >
+            By registering you agree to participate ethically · Null Origin CTF 2026
+          </p>
+        </form>
       </div>
     </main>
   );

@@ -54,8 +54,8 @@ const TIMELINE = [
     desc: "12-hour online CTF qualifier round.",
     bullets: ["Solve challenges across all categories", "Real-time leaderboard", "Top teams qualify for Finals"],
     Icon: Terminal,
-    color: "#ef4444",
-    dot: "#ef4444",
+    color: "#ff3355",
+    dot: "#ff3355",
     done: false,
   },
   {
@@ -88,26 +88,26 @@ function AccordionItem({ q, a, open, onToggle }: AccordionItemProps) {
     <div
       className="border transition-all duration-200 cursor-pointer select-none"
       style={{
-        borderColor: open ? "rgba(239,68,68,0.5)" : "rgba(63,63,70,0.8)",
-        background: open ? "rgba(239,68,68,0.04)" : "rgba(9,9,11,0.7)",
+        borderColor: open ? "rgba(255, 51, 85,0.5)" : "rgba(63,63,70,0.8)",
+        background: open ? "rgba(255, 51, 85,0.04)" : "rgba(9,9,11,0.7)",
       }}
       onClick={onToggle}
     >
       <div className="flex items-center justify-between px-5 py-4 gap-4">
         <span
           className="text-[12px] md:text-[13px] font-black tracking-widest transition-colors"
-          style={{ fontFamily: "'Impact', 'Arial Black', sans-serif", color: open ? "#ef4444" : "#d4d4d8" }}
+          style={{ fontFamily: "'Press Start 2P', monospace", color: open ? "#ff3355" : "#d4d4d8" }}
         >
           {q}
         </span>
         <ChevronDown
           className="shrink-0 h-4 w-4 transition-transform duration-300"
-          style={{ color: open ? "#ef4444" : "#52525b", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+          style={{ color: open ? "#ff3355" : "#52525b", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
         />
       </div>
       {open && (
         <div className="px-5 pb-5">
-          <div className="w-full h-[1px] mb-4" style={{ background: "rgba(239,68,68,0.2)" }} />
+          <div className="w-full h-[1px] mb-4" style={{ background: "rgba(255, 51, 85,0.2)" }} />
           <p className="text-[12px] text-zinc-400 leading-relaxed font-sans tracking-wide uppercase">{a}</p>
         </div>
       )}
@@ -124,12 +124,12 @@ export default function FAQ() {
       {/* ── TIMELINE ── */}
       <div>
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(255, 51, 85,0.15)", border: "1px solid rgba(255, 51, 85,0.3)" }}>
             <Calendar className="h-3.5 w-3.5 text-red-500" />
           </div>
           <div>
             <p className="text-[10px] text-red-400 tracking-widest uppercase font-black">Null Origin CTF</p>
-            <h2 className="text-xl md:text-2xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>
+            <h2 className="text-xl md:text-2xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Press Start 2P', monospace" }}>
               EVENT TIMELINE
             </h2>
           </div>
@@ -138,7 +138,7 @@ export default function FAQ() {
         <div className="relative">
           {/* Center line */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2"
-            style={{ background: "linear-gradient(to bottom, rgba(239,68,68,0.6), rgba(63,63,70,0.3), transparent)" }} />
+            style={{ background: "linear-gradient(to bottom, rgba(255, 51, 85,0.6), rgba(63,63,70,0.3), transparent)" }} />
 
           <div className="flex flex-col gap-10">
             {TIMELINE.map((item, i) => {
@@ -174,7 +174,7 @@ export default function FAQ() {
                         )}
                       </div>
                       <p className="text-[14px] font-black tracking-wider text-zinc-100 mb-1"
-                        style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>{item.label}</p>
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>{item.label}</p>
                       <p className="text-[11px] text-zinc-500 mb-3 font-sans">{item.desc}</p>
                       <ul className="space-y-1">
                         {item.bullets.map((b, j) => (
@@ -202,7 +202,7 @@ export default function FAQ() {
                     <div className="flex items-center gap-2">
                       <Calendar className="h-3.5 w-3.5 text-zinc-600 shrink-0" />
                       <span className="text-[13px] font-black tracking-wider"
-                        style={{ color: item.color, fontFamily: "'Impact','Arial Black',sans-serif" }}>
+                        style={{ color: item.color, fontFamily: "'Press Start 2P', monospace" }}>
                         {item.date}
                       </span>
                     </div>
@@ -223,10 +223,10 @@ export default function FAQ() {
       {/* ── STAY CONNECTED ── */}
       <div>
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(255, 51, 85,0.15)", border: "1px solid rgba(255, 51, 85,0.3)" }}>
             <MessageCircle className="h-3.5 w-3.5 text-red-500" />
           </div>
-          <h2 className="text-xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>
+          <h2 className="text-xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Press Start 2P', monospace" }}>
             STAY CONNECTED
           </h2>
         </div>
@@ -253,12 +253,12 @@ export default function FAQ() {
       {/* ── FAQ ACCORDION ── */}
       <div>
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)" }}>
+          <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: "rgba(255, 51, 85,0.15)", border: "1px solid rgba(255, 51, 85,0.3)" }}>
             <HelpCircle className="h-3.5 w-3.5 text-red-500" />
           </div>
           <div>
             <p className="text-[10px] text-red-400 tracking-widest uppercase font-black">Need answers?</p>
-            <h2 className="text-xl md:text-2xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}>
+            <h2 className="text-xl md:text-2xl font-black tracking-wider text-zinc-100" style={{ fontFamily: "'Press Start 2P', monospace" }}>
               INTEL_FAQS
             </h2>
           </div>

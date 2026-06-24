@@ -33,11 +33,12 @@ export const initialForm: FormData = {
 
 export type SubmitStatus = "idle" | "loading" | "success" | "error";
 
+/* ── Wowi pixel/retro design tokens ── */
 export const inputClass =
-  "w-full bg-[#080810] border border-zinc-800 hover:border-zinc-600 focus:border-red-600 focus:outline-none rounded-md px-3.5 py-2.5 text-[12px] md:text-[13px] tracking-wider text-emerald-400 placeholder-zinc-700 uppercase focus:ring-1 focus:ring-red-600/25 transition-all font-mono";
+  "w-full bg-[#000000] text-white border-[3px] border-[#000] px-3.5 py-3 text-[18px] font-['VT323',monospace] tracking-wider uppercase placeholder-[#7c8389] focus:outline-none focus:border-[#39ff6a] transition-colors";
 
 export const labelClass =
-  "text-[10px] tracking-widest text-zinc-500 uppercase font-bold mb-1.5 flex items-center gap-1.5 select-none";
+  "text-[14px] text-[#7c8389] flex items-center gap-1.5 letter-spacing-[0.5px] select-none mb-1";
 
 export const sectionHeadingClass =
-  "text-[10px] tracking-widest font-black uppercase border-l-2 pl-2.5";
+  "flex items-center gap-2.5 font-['Press_Start_2P',monospace] text-[11px] text-[#ff3355] pb-2.5 border-b-[3px] border-[#000] mb-4";

@@ -1,5 +1,4 @@
-import { ChevronDown, ChevronUp, Hash, ExternalLink } from "lucide-react";
-import { FormData, inputClass, labelClass, sectionHeadingClass } from "./types";
+import { FormData, inputClass, labelClass } from "./types";
 
 interface Props {
   n: number;
@@ -13,50 +12,97 @@ interface Props {
 export default function MemberField({ n, required = false, expanded, form, onToggle, onChange }: Props) {
   const dKey = `member${n}Discord` as keyof FormData;
   const cKey = `member${n}CTFtime` as keyof FormData;
-  const accentColor = required ? "border-emerald-600 text-emerald-400" : "border-zinc-700 text-zinc-500";
-  const iconColor   = required ? "text-emerald-600" : "text-zinc-600";
-  const ringColor   = required ? "focus:ring-emerald-600/40" : "focus:ring-zinc-600/40";
+
+  const barColor = required ? "#39ff6a" : "#7c8389";
 
   return (
-    <fieldset className="space-y-3">
+    <div
+      className="border-[3px] border-[#000] mb-[14px]"
+      style={{ background: "#101018" }}
+    >
+      {/* Member header */}
       <button
-        type="button" onClick={() => onToggle(n)}
-        aria-expanded={expanded} aria-controls={`member${n}-fields`}
-        className={`w-full flex items-center justify-between focus:outline-none focus:ring-1 ${ringColor} rounded px-1 py-0.5`}
+        type="button"
+        onClick={() => onToggle(n)}
+        aria-expanded={expanded}
+        aria-controls={`member${n}-fields`}
+        className="w-full flex items-center justify-between px-[18px] py-[16px] cursor-pointer focus:outline-none"
+        style={{ background: "transparent", border: "none" }}
       >
-        <legend className={`${sectionHeadingClass} ${accentColor} cursor-pointer`}>
-          Member {n}{" "}
-          {required
-            ? <span className="text-red-500 ml-1" aria-label="required">*</span>
-            : <span className="text-zinc-700 font-normal normal-case ml-1 text-[9px]">(optional)</span>}
-        </legend>
-        {expanded
-          ? <ChevronUp   className="h-3 w-3 text-zinc-500" aria-hidden="true" />
-          : <ChevronDown className="h-3 w-3 text-zinc-600" aria-hidden="true" />}
+        <div className="flex items-center gap-[10px]">
+          <span
+            className="inline-block w-1 h-[14px] flex-shrink-0"
+            style={{ background: barColor }}
+          />
+          <span
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: "11px",
+              color: "#f4f6f5",
+            }}
+          >
+            MEMBER {n}{" "}
+            {required
+              ? <span className="text-[#ff3355]">*</span>
+              : <span style={{ color: "#7c8389", fontWeight: "normal", fontSize: "10px" }}>(optional)</span>
+            }
+          </span>
+        </div>
+        <span
+          style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: "12px",
+            color: "#39ff6a",
+            transition: "transform .15s",
+            display: "inline-block",
+            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+          }}
+        >
+          ▾
+        </span>
       </button>
 
+      {/* Member body */}
       {expanded && (
-        <div id={`member${n}-fields`} className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-3 border-l border-zinc-800">
-          <div>
-            <label htmlFor={`m${n}discord`} className={labelClass}>
-              <Hash className={`h-3 w-3 ${iconColor}`} aria-hidden="true" />
-              Discord Username{required && <span className="text-red-500 ml-0.5">*</span>}
-            </label>
-            <input id={`m${n}discord`} type="text" required={required}
-              value={form[dKey] as string} onChange={(e) => onChange(dKey, e.target.value)}
-              placeholder="USERNAME" autoComplete="off" className={inputClass} />
-          </div>
-          <div>
-            <label htmlFor={`m${n}ctftime`} className={labelClass}>
-              <ExternalLink className={`h-3 w-3 ${iconColor}`} aria-hidden="true" />
-              CTFtime Profile{required && <span className="text-red-500 ml-0.5">*</span>}
-            </label>
-            <input id={`m${n}ctftime`} type="url" required={required}
-              value={form[cKey] as string} onChange={(e) => onChange(cKey, e.target.value)}
-              placeholder="CTFTIME.ORG/USER/..." autoComplete="off" inputMode="url" className={inputClass} />
+        <div
+          id={`member${n}-fields`}
+          className="px-[18px] pb-[20px]"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] mt-1">
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`m${n}discord`} className={labelClass}>
+                DISCORD USERNAME{required && <span className="text-[#ff3355] ml-0.5">*</span>}
+              </label>
+              <input
+                id={`m${n}discord`}
+                type="text"
+                required={required}
+                value={form[dKey] as string}
+                onChange={(e) => onChange(dKey, e.target.value)}
+                placeholder="USERNAME"
+                autoComplete="off"
+                className={inputClass}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`m${n}ctftime`} className={labelClass}>
+                CTFTIME PROFILE{required && <span className="text-[#ff3355] ml-0.5">*</span>}
+              </label>
+              <input
+                id={`m${n}ctftime`}
+                type="url"
+                required={required}
+                value={form[cKey] as string}
+                onChange={(e) => onChange(cKey, e.target.value)}
+                placeholder="CTFTIME.ORG/USER/..."
+                autoComplete="off"
+                inputMode="url"
+                className={inputClass}
+              />
+            </div>
           </div>
         </div>
       )}
-    </fieldset>
+    </div>
   );
 }
