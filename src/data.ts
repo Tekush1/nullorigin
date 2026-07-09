@@ -9,7 +9,7 @@ export const INITIAL_CHALLENGES: Challenge[] = [
     points: 100,
     solved: false,
     difficulty: "Easy",
-    flag: "flag{nu11_rot13_d3c0d3}",
+    flag: " ",
     hint: "ROT13 rotates letters by 13 positions in the alphabet. A becomes N, B becomes O, etc. Numbers and symbols are unchanged.",
     content: "Encrypted Transmission:\nsynt{aH11_ebg13_q3p0q3}"
   },
