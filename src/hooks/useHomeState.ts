@@ -13,10 +13,10 @@ export function useHomeState() {
   const [copiedLink, setCopiedLink] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState({
-    days: "24",
-    hours: "08",
-    minutes: "47",
-    seconds: "12",
+    days: "00",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
   });
 
   const [teaserInput, setTeaserInput] = useState("");
@@ -34,15 +34,17 @@ export function useHomeState() {
   const [showAdmin, setShowAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState<"database" | "guide">("database");
 
-  // Countdown timer
+  // Countdown timer — fixed target: September 18, 2026, 00:00:00 (local time)
   useEffect(() => {
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 24);
-    targetDate.setHours(targetDate.getHours() + 8);
+    const targetDate = new Date(2026, 8, 18, 0, 0, 0); // month is 0-indexed: 8 = September
     const interval = setInterval(() => {
       const now = new Date().getTime();
       const difference = targetDate.getTime() - now;
-      if (difference <= 0) { clearInterval(interval); return; }
+      if (difference <= 0) {
+        setTimeLeft({ days: "00", hours: "00", minutes: "00", seconds: "00" });
+        clearInterval(interval);
+        return;
+      }
       const d = Math.floor(difference / (1000 * 60 * 60 * 24));
       const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
