@@ -16,7 +16,7 @@ export default function HomeHero({ timeLeft, onRegister }: HomeHeroProps) {
   return (
     <section
       className="relative w-full overflow-hidden text-center border-b-[3px] border-black"
-      style={{ padding: "64px 0 50px", background: "linear-gradient(180deg, #0b1422 0%, #0e1a2c 45%, #142235 75%, #0a0a12 100%)" }}
+      style={{ padding: "96px 0 50px", background: "linear-gradient(180deg, #0b1422 0%, #0e1a2c 45%, #142235 75%, #0a0a12 100%)" }}
     >
       {/* ── hero scene (moon / confetti / skyline / monitors) ── */}
       <div className="absolute inset-0 z-0 pointer-events-none">
