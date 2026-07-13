@@ -24,9 +24,7 @@ export function validateTeamName(value: string): string {
 
 export function validateCountry(value: string): string {
   const v = clean(value);
-  if (!v) return "Country is required.";
-  if (v.length < 2) return "Enter a valid country name.";
-  if (!/^[a-zA-Z\s.'-]+$/.test(v)) return "Country name looks invalid.";
+  if (!v) return "Please select your country.";
   return "";
 }
 

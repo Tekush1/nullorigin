@@ -40,6 +40,12 @@ export const inputClass =
 export const inputErrorClass =
   "w-full bg-[#000000] text-white border-[3px] border-[#ff3355] px-3.5 py-3 text-[18px] font-['VT323',monospace] tracking-wider uppercase placeholder-[#7c8389] focus:outline-none focus:border-[#ff3355] transition-colors";
 
+export const selectClass =
+  "w-full bg-[#000000] text-white border-[3px] border-[#000] px-3.5 py-3 text-[18px] font-['VT323',monospace] tracking-wider uppercase focus:outline-none focus:border-[#39ff6a] transition-colors appearance-none cursor-pointer pr-10";
+
+export const selectErrorClass =
+  "w-full bg-[#000000] text-white border-[3px] border-[#ff3355] px-3.5 py-3 text-[18px] font-['VT323',monospace] tracking-wider uppercase focus:outline-none focus:border-[#ff3355] transition-colors appearance-none cursor-pointer pr-10";
+
 export const errorTextClass =
   "text-[13px] text-[#ff3355] mt-0.5 normal-case tracking-normal";
 
