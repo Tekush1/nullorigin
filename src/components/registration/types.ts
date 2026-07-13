@@ -37,6 +37,12 @@ export type SubmitStatus = "idle" | "loading" | "success" | "error";
 export const inputClass =
   "w-full bg-[#000000] text-white border-[3px] border-[#000] px-3.5 py-3 text-[18px] font-['VT323',monospace] tracking-wider uppercase placeholder-[#7c8389] focus:outline-none focus:border-[#39ff6a] transition-colors";
 
+export const inputErrorClass =
+  "w-full bg-[#000000] text-white border-[3px] border-[#ff3355] px-3.5 py-3 text-[18px] font-['VT323',monospace] tracking-wider uppercase placeholder-[#7c8389] focus:outline-none focus:border-[#ff3355] transition-colors";
+
+export const errorTextClass =
+  "text-[13px] text-[#ff3355] mt-0.5 normal-case tracking-normal";
+
 export const labelClass =
   "text-[14px] text-[#7c8389] flex items-center gap-1.5 letter-spacing-[0.5px] select-none mb-1";
 

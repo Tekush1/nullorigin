@@ -2,17 +2,20 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import { sound } from "../../hooks/utils/audio";
 import { FormData, SubmitStatus } from "./types";
+import { FieldErrors } from "./validation";
 import TeamLeaderFields from "./TeamLeaderFields";
 import MemberField from "./MemberField";
 
 interface Props {
   form: FormData; status: SubmitStatus; errorMsg: string; expandedMembers: number[];
+  errors: FieldErrors;
   onSubmit: (e: React.FormEvent) => void;
   onChange: (field: keyof FormData, value: string) => void;
+  onBlur: (field: keyof FormData) => void;
   onToggleMember: (n: number) => void;
 }
 
-export default function RegFormCard({ form, status, errorMsg, expandedMembers, onSubmit, onChange, onToggleMember }: Props) {
+export default function RegFormCard({ form, status, errorMsg, expandedMembers, errors, onSubmit, onChange, onBlur, onToggleMember }: Props) {
   return (
     <main
       className="flex-1 w-full max-w-[880px] mx-auto px-6 py-0 relative z-10"
@@ -102,7 +105,7 @@ export default function RegFormCard({ form, status, errorMsg, expandedMembers, o
         style={{ background: "#15151f", boxShadow: "8px 8px 0 #000" }}
       >
         <form onSubmit={onSubmit} noValidate className="space-y-0">
-          <TeamLeaderFields form={form} onChange={onChange} />
+          <TeamLeaderFields form={form} errors={errors} onChange={onChange} onBlur={onBlur} />
 
           {/* Members section */}
           <div className="mb-[30px]">
@@ -115,9 +118,9 @@ export default function RegFormCard({ form, status, errorMsg, expandedMembers, o
             </div>
             {[1, 2, 3, 4].map((n) => (
               <MemberField
-                key={n} n={n} required={n === 1}
+                key={n} n={n} required={false}
                 expanded={expandedMembers.includes(n)}
-                form={form} onToggle={onToggleMember} onChange={onChange}
+                form={form} errors={errors} onToggle={onToggleMember} onChange={onChange} onBlur={onBlur}
               />
             ))}
           </div>
@@ -128,6 +131,7 @@ export default function RegFormCard({ form, status, errorMsg, expandedMembers, o
               className="border-[3px] border-[#ff3355] p-[14px] mb-4"
               style={{ background: "rgba(255,51,85,.12)", color: "#ff3355", fontFamily: "'VT323', monospace", fontSize: "15px" }}
               role="alert"
+              aria-live="assertive"
             >
               ✗ SUBMISSION FAILED — {errorMsg}
             </div>

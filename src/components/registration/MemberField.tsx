@@ -1,19 +1,23 @@
-import { FormData, inputClass, labelClass } from "./types";
+import { FormData, inputClass, inputErrorClass, errorTextClass, labelClass } from "./types";
+import { FieldErrors } from "./validation";
 
 interface Props {
   n: number;
   required?: boolean;
   expanded: boolean;
   form: FormData;
+  errors: FieldErrors;
   onToggle: (n: number) => void;
   onChange: (field: keyof FormData, value: string) => void;
+  onBlur: (field: keyof FormData) => void;
 }
 
-export default function MemberField({ n, required = false, expanded, form, onToggle, onChange }: Props) {
+export default function MemberField({ n, required = false, expanded, form, errors, onToggle, onChange, onBlur }: Props) {
   const dKey = `member${n}Discord` as keyof FormData;
   const cKey = `member${n}CTFtime` as keyof FormData;
 
-  const barColor = required ? "#39ff6a" : "#7c8389";
+  const hasError = Boolean(errors[dKey] || errors[cKey]);
+  const barColor = hasError ? "#ff3355" : required ? "#39ff6a" : "#7c8389";
 
   return (
     <div
@@ -47,6 +51,11 @@ export default function MemberField({ n, required = false, expanded, form, onTog
               : <span style={{ color: "#7c8389", fontWeight: "normal", fontSize: "10px" }}>(optional)</span>
             }
           </span>
+          {hasError && !expanded && (
+            <span style={{ fontFamily: "'VT323', monospace", fontSize: "14px", color: "#ff3355" }}>
+              — needs attention
+            </span>
+          )}
         </div>
         <span
           style={{
@@ -79,10 +88,15 @@ export default function MemberField({ n, required = false, expanded, form, onTog
                 required={required}
                 value={form[dKey] as string}
                 onChange={(e) => onChange(dKey, e.target.value)}
+                onBlur={() => onBlur(dKey)}
                 placeholder="USERNAME"
                 autoComplete="off"
-                className={inputClass}
+                maxLength={32}
+                aria-invalid={Boolean(errors[dKey])}
+                aria-describedby={errors[dKey] ? `m${n}discord-error` : undefined}
+                className={errors[dKey] ? inputErrorClass : inputClass}
               />
+              {errors[dKey] && <span id={`m${n}discord-error`} className={errorTextClass}>{errors[dKey]}</span>}
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor={`m${n}ctftime`} className={labelClass}>
@@ -94,11 +108,15 @@ export default function MemberField({ n, required = false, expanded, form, onTog
                 required={required}
                 value={form[cKey] as string}
                 onChange={(e) => onChange(cKey, e.target.value)}
+                onBlur={() => onBlur(cKey)}
                 placeholder="CTFTIME.ORG/USER/..."
                 autoComplete="off"
                 inputMode="url"
-                className={inputClass}
+                aria-invalid={Boolean(errors[cKey])}
+                aria-describedby={errors[cKey] ? `m${n}ctftime-error` : undefined}
+                className={errors[cKey] ? inputErrorClass : inputClass}
               />
+              {errors[cKey] && <span id={`m${n}ctftime-error`} className={errorTextClass}>{errors[cKey]}</span>}
             </div>
           </div>
         </div>
