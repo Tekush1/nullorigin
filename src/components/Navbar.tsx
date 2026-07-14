@@ -27,9 +27,7 @@ export default function Navbar({ audioEnabled, onToggleSound, onRegister }: Navb
     >
       <div className="shell">
         <div
-          className={`flex items-center justify-between rounded-2xl px-4 sm:px-5 py-2.5 transition-all duration-300 ${
-            scrolled ? "glass" : "border border-transparent"
-          }`}
+          className={`flex items-center justify-between rounded-2xl px-4 sm:px-5 py-2.5 transition-all duration-300 glass`}
         >
           {/* Logo */}
           <a

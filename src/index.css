@@ -69,7 +69,7 @@ html {
   scroll-behavior: smooth;
   /* Offsets anchor-link jumps (#about, #schedule, etc.) so the fixed
      navbar never overlaps the target section's top content. */
-  scroll-padding-top: 96px;
+  scroll-padding-top: 112px;
 }
 
 body {
