@@ -16,13 +16,13 @@ export default function HomeHero({ timeLeft, onRegister }: HomeHeroProps) {
   return (
     <section
       className="relative w-full overflow-hidden text-center border-b-[3px] border-black"
-      style={{ padding: "128px 0 50px", background: "linear-gradient(180deg, #0b1422 0%, #0e1a2c 45%, #142235 75%, #0a0a12 100%)" }}
+      style={{ padding: "180px 0 50px", background: "linear-gradient(180deg, #0b1422 0%, #0e1a2c 45%, #142235 75%, #0a0a12 100%)" }}
     >
       {/* ── hero scene (moon / confetti / skyline / monitors) ── */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {/* moon */}
         <div
-          className="absolute -top-10 left-1/2 -translate-x-1/2 w-[120px] h-[120px] md:w-[170px] md:h-[170px] rounded-full"
+          className="absolute top-16 left-1/2 -translate-x-1/2 w-[120px] h-[120px] md:w-[170px] md:h-[170px] rounded-full"
           style={{
             background:
               "radial-gradient(circle at 50% 50%, #ffe9a8 0%, #ffc23c 45%, rgba(255,194,60,0) 72%)",
