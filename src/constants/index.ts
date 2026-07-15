@@ -8,7 +8,7 @@ export const EVENT_DATE = new Date("2026-07-10T13:00:00+05:30");
 export const NAV = [
   { id: "about", label: "About" },
   { id: "highlights", label: "Highlights" },
-  { id: "sponsors", label: "Sponsors" },
+  // { id: "sponsors", label: "Sponsors" }, // hidden for now — matches hidden section in App.tsx
   { id: "schedule", label: "Schedule" },
   { id: "prizes", label: "Prizes" },
   { id: "faq", label: "FAQ" },
